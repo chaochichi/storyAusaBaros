@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>แบบทดสอบก่อนเรียน — อุสา บารส</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Sarabun',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+  background:url('https://chaochichi.github.io/storyAusaBaros/ChatGPT%20Image%2025%20%E0%B8%9E.%E0%B8%84.%202569%2015_29_18.png') center center/cover no-repeat fixed;
+}
+.overlay{position:fixed;inset:0;background:linear-gradient(180deg,#ffffff33 0%,#ffffffbb 100%);z-index:0}
+.container{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:16px 14px 40px;min-height:100vh}
+
+/* Header */
+.header{text-align:center;margin-bottom:16px;padding:18px 16px;
+  background:linear-gradient(135deg,#fff9eebb,#fff0d0dd);
+  border-radius:24px;border:2px solid #f5c842;
+  backdrop-filter:blur(12px);box-shadow:0 8px 32px #f5c84244}
+.badge{display:inline-block;
+  background:linear-gradient(90deg,#e74c3c,#ff6b35);
+  color:#fff;font-size:12px;font-weight:800;
+  padding:5px 16px;border-radius:20px;letter-spacing:1px;margin-bottom:10px;
+  box-shadow:0 3px 10px #e74c3c44}
+.header h1{font-size:21px;font-weight:800;color:#7b3f00;line-height:1.4}
+.header p{font-size:13px;color:#a0522d;margin-top:4px;font-weight:600}
+.std{display:inline-block;background:#fff3cd;border:1.5px solid #f5c842;
+  color:#8b6914;font-size:12px;padding:3px 12px;border-radius:10px;margin:2px;font-weight:700}
+
+/* Progress */
+.prog-bar{background:#ffe0b2;border-radius:10px;height:10px;overflow:hidden;margin-bottom:4px;
+  box-shadow:inset 0 2px 4px #0000001a}
+.prog-fill{background:linear-gradient(90deg,#ff9800,#f5c842);height:10px;border-radius:10px;
+  transition:width .5s;box-shadow:0 0 8px #ff980088}
+.prog-txt{display:flex;justify-content:space-between;font-size:13px;
+  color:#e65100;margin-bottom:14px;font-weight:700}
+
+/* Question Card */
+.q-card{background:linear-gradient(135deg,#fff9eef0,#fffbf0f0);
+  border-radius:24px;border:2px solid #f5c842;padding:22px 18px;margin-bottom:12px;
+  backdrop-filter:blur(8px);box-shadow:0 8px 32px #f5c84233;animation:fu .35s ease}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.q-num{font-size:12px;font-weight:800;color:#ff6b35;letter-spacing:1px;margin-bottom:8px}
+.q-text{font-size:18px;font-weight:800;color:#5d2e00;line-height:1.65;margin-bottom:18px}
+
+/* Choices */
+.choices{display:flex;flex-direction:column;gap:10px}
+.choice{display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#fff8e1,#fffde7);
+  border:2px solid #f5c842;border-radius:16px;padding:13px 16px;
+  cursor:pointer;font-size:16px;color:#5d2e00;font-weight:700;
+  transition:all .2s;font-family:'Sarabun',sans-serif;text-align:left;width:100%;
+  box-shadow:0 3px 10px #f5c84222}
+.choice:hover:not(.disabled){
+  border-color:#ff9800;background:linear-gradient(135deg,#fff3cd,#fff8e1);
+  transform:translateX(6px) scale(1.01);
+  box-shadow:0 6px 20px #ff980033}
+.lbl{width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,#ff9800,#f5c842);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#fff;flex-shrink:0;
+  box-shadow:0 3px 8px #ff980044}
+.choice.correct{border-color:#27ae60!important;background:linear-gradient(135deg,#d5f5e3,#eafaf1)!important;color:#1a5c35!important;box-shadow:0 4px 16px #27ae6033!important}
+.choice.correct .lbl{background:linear-gradient(135deg,#27ae60,#2ecc71)!important}
+.choice.wrong{border-color:#e74c3c!important;background:linear-gradient(135deg,#fde8e8,#fdedec)!important;color:#7b1111!important;box-shadow:0 4px 16px #e74c3c33!important}
+.choice.wrong .lbl{background:linear-gradient(135deg,#e74c3c,#c0392b)!important}
+.choice.disabled{cursor:default;transform:none!important}
+
+/* Feedback */
+.fb{margin-top:12px;padding:13px 16px;border-radius:16px;font-size:15px;line-height:1.6;display:none;font-weight:600}
+.fb.show{display:block;animation:fu .2s ease}
+.fb.correct{background:#d5f5e3;border-left:5px solid #27ae60;color:#1a5c35}
+.fb.wrong{background:#fde8e8;border-left:5px solid #e74c3c;color:#7b1111}
+
+/* Button */
+.btn-next{width:100%;padding:15px;
+  background:linear-gradient(135deg,#ff9800,#f5c842);
+  color:#fff;border:none;border-radius:16px;font-size:17px;font-weight:800;
+  cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .2s;
+  margin-top:14px;box-shadow:0 5px 18px #ff980055;text-shadow:0 1px 3px #0000003a}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px #ff980077}
+.btn-next:disabled{opacity:.35;cursor:default;transform:none;box-shadow:none}
+
+/* Saving */
+.saving{position:fixed;inset:0;z-index:100;background:#ffffffcc;display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:12px;backdrop-filter:blur(6px)}
+.saving.show{display:flex}
+.spin{width:52px;height:52px;border:5px solid #ffe0b2;border-top-color:#ff9800;
+  border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.saving p{color:#e65100;font-size:16px;font-weight:700}
+
+/* Result */
+.result-box{text-align:center}
+.score-ring{width:140px;height:140px;border-radius:50%;
+  background:conic-gradient(#ff9800 var(--pct,0deg),#ffe0b2 0);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;box-shadow:0 0 30px #ff980055;position:relative}
+.score-ring::before{content:'';position:absolute;width:108px;height:108px;
+  border-radius:50%;background:#fff9ee}
+.si{position:relative;z-index:1;text-align:center}
+.sb{font-size:36px;font-weight:800;color:#e65100;line-height:1}
+.sp2{font-size:14px;color:#ff9800;font-weight:700}
+.grade{font-size:24px;font-weight:800;color:#5d2e00;margin-bottom:6px}
+.gmsg{font-size:15px;color:#a0522d;margin-bottom:20px;line-height:1.5;font-weight:600}
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.si2{background:#fff8e1;border:2px solid #f5c842;border-radius:16px;padding:14px 8px;text-align:center}
+.sn{font-size:26px;font-weight:800;color:#e65100}
+.sl{font-size:13px;color:#a0522d;margin-top:2px;font-weight:600}
+.wl{text-align:left;background:#fde8e8;border:2px solid #e74c3c44;border-radius:16px;
+  padding:14px;margin-bottom:16px;max-height:220px;overflow-y:auto}
+.wl h4{font-size:14px;color:#c0392b;margin-bottom:10px;font-weight:800}
+.wi{font-size:13px;color:#7b1111;margin-bottom:8px;padding:8px 12px;
+  background:#fff;border-radius:10px;border-left:4px solid #e74c3c;font-weight:600}
+.wi strong{color:#27ae60}
+.saved-note{background:#d5f5e3;border:2px solid #27ae6044;border-radius:14px;
+  padding:10px 14px;font-size:14px;color:#1a5c35;margin-bottom:14px;font-weight:700}
+.btn-retry{background:linear-gradient(135deg,#ff9800,#f5c842);color:#fff;
+  border:none;border-radius:16px;padding:14px 32px;font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Sarabun',sans-serif;transition:all .2s;
+  box-shadow:0 5px 18px #ff980055;text-shadow:0 1px 3px #0000003a}
+.btn-retry:hover{opacity:.9;transform:translateY(-2px)}
+</style>
+</head>
+<body>
+<div class="overlay"></div>
+<div class="saving" id="saving"><div class="spin"></div><p>🌟 กำลังบันทึกคะแนน...</p></div>
+<div class="container">
+  <div class="header">
+    <div class="badge">📜 PRE-TEST</div>
+    <h1>🏰 แบบทดสอบก่อนเรียน<br>"อุสา บารส"</h1>
+    <p>ชุด เล่าตำนาน นิทานพื้นบ้านอีสาน | 15 ข้อ</p>
+    <div style="margin-top:8px">
+      <span class="std">ส 4.2 ป.3/2</span>
+      <span class="std">ส 4.2 ป.3/3</span>
+    </div>
+  </div>
+  <div id="quiz-area"></div>
+</div>
+<script>
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwGEbPnISaWHzrQlorwIOxWOM9u_NIM-zuRVuEsRUM-ccwPxyTDXrpobLTdGewHAAOdaQ/exec";
+const params=new URLSearchParams(window.location.search);
+const studentName=params.get('name')||'นักเรียน';
+const questions=[
+  {q:'ตำนาน "อุสา บารส" เป็นนิทานพื้นบ้านของภาคใดของประเทศไทย?',choices:['ภาคเหนือ','ภาคอีสาน','ภาคกลาง','ภาคใต้'],ans:1,explain:'อุสา บารส เป็นตำนานพื้นบ้านของภาคอีสาน ที่สืบทอดกันมาอย่างยาวนาน'},
+  {q:'นางอุสาถูกพระบิดาสร้างสิ่งใดให้อยู่อาศัย เพื่อไม่ให้พบกับชายหนุ่ม?',choices:['พระราชวัง','หอสูง','ถ้ำ','เรือนแพ'],ans:1,explain:'พระยาพาน สร้างหอสูงให้นางอุสาอยู่อาศัย เพื่อไม่ให้พบกับชายหนุ่ม'},
+  {q:'ท้าวบารสพบกับนางอุสาครั้งแรกได้อย่างไร?',choices:['พบกันที่ตลาด','พบกันในงานบุญ','ท้าวบารสเห็นกระทงที่นางอุสาลอยมา','ท้าวบารสปีนหอขึ้นไปพบ'],ans:2,explain:'ท้าวบารสพบกระทงที่นางอุสาลอยอธิษฐานหาคู่ จึงตามกระทงไปจนพบนางอุสา'},
+  {q:'สถานที่ท่องเที่ยวทางประวัติศาสตร์ที่เชื่อมโยงกับตำนานอุสา บารส อยู่ในจังหวัดใด?',choices:['ขอนแก่น','เลย','อุดรธานี','หนองบัวลำภู'],ans:2,explain:'อุทยานประวัติศาสตร์ภูพระบาท ซึ่งมีหอนางอุสา ตั้งอยู่ที่อำเภอบ้านผือ จังหวัดอุดรธานี'},
+  {q:'สถานที่ในตำนานที่เรียกว่า "หอนางอุสา" ปัจจุบันอยู่ที่ใด?',choices:['อุทยานแห่งชาติภูกระดึง','อุทยานประวัติศาสตร์ภูพระบาท','วัดป่าภูก้อน','เขื่อนอุบลรัตน์'],ans:1,explain:'หอนางอุสาตั้งอยู่ในอุทยานประวัติศาสตร์ภูพระบาท อำเภอบ้านผือ จังหวัดอุดรธานี'},
+  {q:'ตำนานอุสา บารส สอนคุณธรรมข้อใดเป็นหลัก?',choices:['ความขยันหมั่นเพียร','ความรัก ความซื่อสัตย์ และการเสียสละ','ความกล้าหาญในการรบ','ความประหยัดอดออม'],ans:1,explain:'ตำนานอุสา บารส สอนเรื่องความรัก ความซื่อสัตย์ และการเสียสละ'},
+  {q:'ใครคือพ่อของนางอุสาในตำนาน?',choices:['ท้าวบารส','พระยาพาน','พระยาแถน','ท้าวก่ำกาดำ'],ans:1,explain:'พระยาพานเป็นพ่อของนางอุสา ผู้สร้างหอสูงเพื่อกักขังนางอุสาไว้'},
+  {q:'ตำนานพื้นบ้านมีความสำคัญต่อชุมชนอย่างไร?',choices:['ใช้เพื่อสร้างความกลัว','สืบทอดวัฒนธรรมและคุณค่าของชุมชน','ใช้เพื่อสร้างรายได้','ใช้เพื่อสอนวิชาคณิตศาสตร์'],ans:1,explain:'ตำนานพื้นบ้านช่วยสืบทอดวัฒนธรรม ประเพณี และคุณค่าของชุมชนจากรุ่นสู่รุ่น'},
+  {q:'การลอยกระทงในตำนานอุสา บารส มีความหมายว่าอย่างไร?',choices:['ขอพรให้ฝนตก','อธิษฐานหาคู่ครองที่ดี','ไหว้พระแม่คงคา','ส่งความชั่วร้ายออกไป'],ans:1,explain:'นางอุสาลอยกระทงเพื่ออธิษฐานหาคู่ครองที่ดี สะท้อนประเพณีความเชื่อของคนอีสาน'},
+  {q:'วัฒนธรรมของชุมชนอีสานในตำนานอุสา บารส แตกต่างจากชุมชนอื่นอย่างไร?',choices:['มีประเพณีลอยกระทงเหมือนทุกภาค แต่เนื้อหาตำนานต่างกัน','ไม่มีความแตกต่างกันเลย','ชุมชนอีสานไม่มีตำนานพื้นบ้าน','วัฒนธรรมอีสานเหมือนกับภาคเหนือทุกอย่าง'],ans:0,explain:'แต่ละภาคมีประเพณีลอยกระทงเหมือนกัน แต่ตำนานที่เล่าต่างกันตามบริบทท้องถิ่น'},
+  {q:'ข้อใดเป็นลักษณะสำคัญของนิทานพื้นบ้าน?',choices:['เป็นเรื่องจริงทางประวัติศาสตร์ล้วนๆ','เล่าสืบต่อกันมาและสะท้อนวิถีชีวิตของชุมชน','มีผู้แต่งคนเดียวและมีลิขสิทธิ์ชัดเจน','ใช้ภาษาทางการเสมอ'],ans:1,explain:'นิทานพื้นบ้านมีลักษณะเล่าสืบต่อกันมาในชุมชน สะท้อนวิถีชีวิตและคุณธรรมของคนในท้องถิ่น'},
+  {q:'สถานที่ที่ปรากฏในตำนานอุสา บารส บอกให้เรารู้เรื่องอะไร?',choices:['บอกว่าสถานที่นั้นไม่มีคุณค่า','บอกว่าสถานที่นั้นมีความเป็นมาและเชื่อมโยงกับประวัติศาสตร์ท้องถิ่น','บอกว่าสถานที่นั้นเป็นของต่างชาติ','บอกว่าสถานที่นั้นห้ามเข้า'],ans:1,explain:'สถานที่ในตำนานเชื่อมโยงกับประวัติศาสตร์และวัฒนธรรมท้องถิ่น'},
+  {q:'ถ้านักเรียนต้องการศึกษาวัฒนธรรมของชุมชนตนเอง ควรทำสิ่งใดก่อน?',choices:['ค้นคว้าจากอินเทอร์เน็ตเท่านั้น','สอบถามผู้ใหญ่ในชุมชนและศึกษาสถานที่จริงในท้องถิ่น','ไม่ต้องศึกษาเพราะไม่สำคัญ','รอให้ครูบอกข้อมูลทั้งหมด'],ans:1,explain:'การสอบถามผู้ใหญ่และศึกษาสถานที่จริงเป็นวิธีที่ดีที่สุดในการเรียนรู้วัฒนธรรมของชุมชน'},
+  {q:'ตำนานอุสา บารส สะท้อนให้เห็นว่าคนในชุมชนอีสานให้คุณค่าเรื่องใด?',choices:['ชอบการต่อสู้และสงคราม','ให้คุณค่ากับความรัก ความซื่อสัตย์ และครอบครัว','ไม่ให้ความสำคัญกับประเพณี','ชอบแยกตัวออกจากสังคม'],ans:1,explain:'ตำนานอุสา บารส สะท้อนว่าคนอีสานให้คุณค่ากับความรักและความสัมพันธ์ในครอบครัวและชุมชน'},
+  {q:'นักเรียนควรภูมิใจในตำนานพื้นบ้านท้องถิ่นของตนเองเพราะเหตุใด?',choices:['เพราะตำนานพื้นบ้านทำให้ได้เกรดดี','เพราะตำนานพื้นบ้านเป็นมรดกทางวัฒนธรรมที่บรรพบุรุษสร้างไว้','เพราะตำนานพื้นบ้านไม่มีที่ไหนในโลก','เพราะครูบังคับให้ภูมิใจ'],ans:1,explain:'ตำนานพื้นบ้านเป็นมรดกทางวัฒนธรรมอันมีค่าที่บรรพบุรุษสร้างสรรค์และสืบทอดมาให้'}
+];
+let cur=0,sc=0,answered=false;
+const wl=[];
+function render(){
+  const a=document.getElementById('quiz-area');
+  if(cur>=questions.length){showResult(a);return;}
+  const q=questions[cur];
+  const pct=Math.round((cur/questions.length)*100);
+  a.innerHTML=`
+    <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="prog-txt"><span>⭐ ข้อ ${cur+1} / ${questions.length}</span><span>${pct}%</span></div>
+    <div class="q-card">
+      <div class="q-num">❓ ข้อที่ ${cur+1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="choices">
+        ${q.choices.map((c,i)=>`
+          <button class="choice" id="c${i}" onclick="pick(${i})">
+            <div class="lbl">${['ก','ข','ค','ง'][i]}</div>
+            <span>${c}</span>
+          </button>`).join('')}
+      </div>
+      <div class="fb" id="fb"></div>
+      <button class="btn-next" id="nb" onclick="next()" disabled>
+        ${cur<questions.length-1?'ข้อถัดไป →':'ดูผลคะแนน 🏆'}
+      </button>
+    </div>`;
+  answered=false;
+}
+function pick(i){
+  if(answered)return;answered=true;
+  const q=questions[cur];
+  document.querySelectorAll('.choice').forEach(e=>e.classList.add('disabled'));
+  const ch=document.getElementById('c'+i);
+  if(i===q.ans){ch.classList.add('correct');sc++;}
+  else{ch.classList.add('wrong');document.getElementById('c'+q.ans).classList.add('correct');
+    wl.push({num:cur+1,q:q.q,correct:q.choices[q.ans]});}
+  const fb=document.getElementById('fb');
+  fb.className='fb show '+(i===q.ans?'correct':'wrong');
+  fb.innerHTML=(i===q.ans?'✅ ถูกต้องมาก! ':'❌ ยังไม่ถูกนะ — ')+q.explain;
+  document.getElementById('nb').disabled=false;
+}
+function next(){cur++;render();}
+async function saveScore(s){
+  document.getElementById('saving').classList.add('show');
+  try{await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:studentName,type:'pre',score:s})});}
+  catch(e){console.log(e);}
+  document.getElementById('saving').classList.remove('show');
+}
+async function showResult(a){
+  await saveScore(sc);
+  const pct=Math.round((sc/questions.length)*100);
+  const deg=(sc/questions.length)*360;
+  let grade,msg,emoji;
+  if(pct>=80){grade='ยอดเยี่ยม!';msg='เก่งมากเลย รู้จักอุสา บารส ดีมากแล้ว 🌟';emoji='🏆';}
+  else if(pct>=60){grade='ดีมาก!';msg='รู้จักตำนานอุสา บารส พอสมควรแล้ว 😊';emoji='👍';}
+  else if(pct>=40){grade='พอใช้';msg='เรียนรู้บทเรียนแล้วจะเข้าใจมากขึ้นนะคะ 📚';emoji='📚';}
+  else{grade='เริ่มต้นดี!';msg='ไม่เป็นไร เรียนรู้แล้วจะเก่งขึ้นเลย 💪';emoji='💪';}
+  const wHTML=wl.length>0?`
+    <div class="wl"><h4>📋 ข้อที่ตอบผิด — ทบทวนด้วยนะคะ</h4>
+    ${wl.map(w=>`<div class="wi"><strong>ข้อ ${w.num}:</strong> ${w.q}<br>เฉลย: <strong>${w.correct}</strong></div>`).join('')}
+    </div>`:`<p style="color:#1a5c35;margin-bottom:14px;font-weight:800;font-size:16px">🎉 เก่งมาก! ถูกทุกข้อเลย!</p>`;
+  a.innerHTML=`
+    <div class="q-card result-box">
+      <div class="saved-note">✅ บันทึกคะแนนของ <strong>${studentName}</strong> เรียบร้อยแล้ว</div>
+      <div style="font-size:48px;margin-bottom:8px">${emoji}</div>
+      <div class="score-ring" style="--pct:${deg}deg">
+        <div class="si">
+          <div class="sb">${sc}/${questions.length}</div>
+          <div class="sp2">${pct}%</div>
+        </div>
+      </div>
+      <div class="grade">${grade}</div>
+      <div class="gmsg">${msg}<br>
+        <span style="font-size:13px;color:#a0522d">คะแนนก่อนเรียนของ ${studentName}</span>
+      </div>
+      <div class="sg">
+        <div class="si2"><div class="sn" style="color:#27ae60">${sc}</div><div class="sl">ถูก</div></div>
+        <div class="si2"><div class="sn" style="color:#e74c3c">${questions.length-sc}</div><div class="sl">ผิด</div></div>
+        <div class="si2"><div class="sn" style="color:#e65100">${pct}%</div><div class="sl">คะแนน</div></div>
+      </div>
+      ${wHTML}
+      <button class="btn-retry" onclick="restart()">🔄 ทำใหม่อีกครั้ง</button>
+    </div>`;
+}
+function restart(){cur=0;sc=0;wl.length=0;render();}
+render();
+</script>
+</body>
+</html>
