@@ -136,23 +136,7 @@ const imgs = {};
 const imgFiles = ['baras_sprite','usa_sprite','demon_sprite','bg_game','game_title'];
 
 let player, demons, chests, bullets, particles;
-const processedImgs = {};
 
-function removeWhiteBg(img, name) {
-  const c = document.createElement('canvas');
-  c.width = img.width; c.height = img.height;
-  const x = c.getContext('2d');
-  x.drawImage(img, 0, 0);
-  const d = x.getImageData(0, 0, c.width, c.height);
-  for (let i = 0; i < d.data.length; i += 4) {
-    const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
-    if (r>200 && g>200 && b>200) d.data[i+3] = 0;
-  }
-  x.putImageData(d, 0, 0);
-  const ni = new Image();
-  ni.src = c.toDataURL();
-  processedImgs[name] = ni;
-}
 let bgX = 0;
 let frameCount = 0;
 
@@ -171,7 +155,6 @@ function loadImages() {
     const img = new Image();
     img.src = BASE + name + '.png';
     img.onload = () => {
-      if (['baras_sprite','demon_sprite','usa_sprite'].includes(name)) removeWhiteBg(img, name);
       loaded++;
       if (loaded === imgFiles.length) {
         document.getElementById('startBtn').style.display = 'block';
@@ -230,6 +213,7 @@ function spawnDemon(x) {
 
 function startGame() {
   document.getElementById('overlay').style.display = 'none';
+  keys = {};
   initGame();
   gameRunning = true;
   requestAnimationFrame(gameLoop);
@@ -243,14 +227,14 @@ function updateHUD() {
 }
 
 function drawSprite(img, row, col, x, y, w, h, flipX) {
-  const key = Object.keys(imgs).find(k=>imgs[k]===img);
-  if (key && processedImgs[key] && processedImgs[key].complete) img = processedImgs[key];
+
   if (!img || !img.complete) {
     ctx.fillStyle = '#ff9800';
     ctx.fillRect(x, y, w, h);
     return;
   }
   ctx.save();
+  ctx.globalCompositeOperation = 'source-over';
   if (flipX) {
     ctx.translate(x + w, y);
     ctx.scale(-1, 1);
@@ -274,9 +258,8 @@ function update() {
   const groundY = H * 0.78;
   const speed = 3.5;
 
-  // BG scroll
-  bgX -= 1.5;
-  if (bgX <= -W) bgX += W;
+  // BG scroll only when player moves right
+  if (keys['right']) { bgX -= 2.5; if (bgX <= -W) bgX += W; }
 
   // Player movement
   player.vx = 0;
@@ -307,6 +290,7 @@ function update() {
   player.vy += 0.6;
   player.y += player.vy;
   if (player.y >= groundY) { player.y = groundY; player.vy = 0; player.onGround = true; }
+  if (player.x > W * 0.5 && keys['right']) { player.x = W * 0.5; } // camera follows
   player.x = Math.max(0, Math.min(W - player.w, player.x));
   if (player.invincible > 0) player.invincible--;
   if (player.slashTimer > 0) player.slashTimer--;
@@ -332,8 +316,15 @@ function update() {
   // Demons
   demons.forEach(d => {
     if (d.state === 'dead') return;
+    // Chase player
+    const dist = player.x - d.x;
+    if (Math.abs(dist) > 20) {
+      d.vx = dist > 0 ? 1.5 : -1.5;
+      d.facing = dist > 0 ? 1 : -1;
+    }
     d.x += d.vx;
-    if (d.x < 0 || d.x > W) d.vx *= -1;
+    if (d.x < 0) { d.x = 0; d.vx = 1.5; }
+    if (d.x > W - d.w) { d.x = W - d.w; d.vx = -1.5; }
     d.frameTimer++;
     if (d.frameTimer >= 8) { d.frameTimer=0; d.frame=(d.frame+1)%4; }
     if (d.hitTimer > 0) d.hitTimer--;
