@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ผจญภัยตามหานางอุสา</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;overflow:hidden;font-family:'Sarabun',sans-serif;touch-action:none}
+#gameCanvas{display:block;margin:0 auto}
+#ui{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+#hud{position:absolute;top:8px;left:0;width:100%;padding:0 12px;display:flex;justify-content:space-between;align-items:center}
+#lives{font-size:22px;color:#fff;text-shadow:1px 1px 3px #000}
+#chestCount{font-size:15px;color:#ffe082;font-weight:700;text-shadow:1px 1px 3px #000;background:rgba(0,0,0,0.4);padding:4px 10px;border-radius:20px}
+#scoreBar{position:absolute;top:44px;left:12px;right:12px}
+#scoreLabel{font-size:12px;color:#ffe082;margin-bottom:2px;text-shadow:1px 1px 3px #000}
+#scoreBg{background:rgba(0,0,0,0.4);border-radius:10px;height:14px;overflow:hidden}
+#scoreFill{background:linear-gradient(90deg,#ff9800,#ffc107);height:14px;border-radius:10px;transition:width .4s;width:0%}
+#controls{position:absolute;bottom:0;left:0;width:100%;height:140px;pointer-events:all;display:flex;justify-content:space-between;align-items:flex-end;padding:10px 16px}
+.ctrl-left{display:flex;gap:10px}
+.ctrl-right{display:flex;gap:10px}
+.btn{width:60px;height:60px;border-radius:50%;border:2px solid rgba(255,255,255,0.5);background:rgba(0,0,0,0.45);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
+.btn:active,.btn.pressed{background:rgba(255,152,0,0.5);border-color:#ff9800;transform:scale(0.95)}
+#btnUp{width:56px;height:56px;align-self:flex-start;margin-bottom:4px}
+#overlay{position:fixed;inset:0;z-index:100;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#titleImg{max-width:85%;max-height:70vh;object-fit:contain;animation:fadeIn .8s ease}
+#startBtn{margin-top:20px;padding:14px 40px;background:linear-gradient(135deg,#ff9800,#ffc107);color:#fff;border:none;border-radius:20px;font-size:20px;font-weight:700;cursor:pointer;font-family:'Sarabun',sans-serif;box-shadow:0 4px 16px #ff980055;animation:pulse 1.5s infinite alternate;display:none}
+@keyframes fadeIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.05)}}
+#howto{color:#ffe082;font-size:14px;text-align:center;margin-top:10px;line-height:1.6;display:none}
+#popup{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:16px}
+#popupBox{background:linear-gradient(135deg,#fff9ee,#fff3e0);border-radius:24px;border:3px solid #ff9800;padding:22px 18px;width:100%;max-width:420px;animation:fadeIn .3s ease}
+#popQ{font-size:17px;font-weight:800;color:#5d2e00;margin-bottom:16px;line-height:1.6;text-align:center}
+#popChoices{display:flex;flex-direction:column;gap:10px}
+.pchoice{padding:13px 16px;background:#fff8e1;border:2px solid #ffe082;border-radius:14px;cursor:pointer;font-size:15px;font-weight:700;color:#5d2e00;font-family:'Sarabun',sans-serif;text-align:left;transition:all .15s}
+.pchoice:hover{border-color:#ff9800;background:#fff3cd}
+.pchoice.correct{border-color:#27ae60!important;background:#d5f5e3!important;color:#1a5c35!important}
+.pchoice.wrong{border-color:#e74c3c!important;background:#fde8e8!important;color:#7b1111!important}
+#popFb{margin-top:12px;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;display:none;line-height:1.6}
+#popFb.correct{background:#d5f5e3;border-left:4px solid #27ae60;color:#1a5c35}
+#popFb.wrong{background:#fde8e8;border-left:4px solid #e74c3c;color:#7b1111}
+#popContinue{width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,#ff9800,#ffc107);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Sarabun',sans-serif;display:none}
+#endScreen{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;text-align:center}
+#endEmoji{font-size:60px;margin-bottom:10px}
+#endTitle{font-size:26px;font-weight:800;color:#ffe082;margin-bottom:8px}
+#endMsg{font-size:16px;color:#fff;margin-bottom:20px;line-height:1.7}
+#endScore{font-size:20px;font-weight:800;color:#ffc107;margin-bottom:20px}
+#restartBtn{padding:14px 36px;background:linear-gradient(135deg,#ff9800,#ffc107);color:#fff;border:none;border-radius:20px;font-size:18px;font-weight:800;cursor:pointer;font-family:'Sarabun',sans-serif}
+#landscape-msg{position:fixed;inset:0;z-index:999;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;color:#fff;text-align:center;padding:30px}
+#landscape-msg p{font-size:20px;font-weight:700;line-height:1.8;color:#ffe082}
+</style>
+</head>
+<body>
+<div id="landscape-msg">
+  <div style="font-size:60px;margin-bottom:16px">🔄</div>
+  <p>กรุณาหมุนมือถือ<br>แนวนอนก่อนเล่นนะคะ</p>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<div id="ui">
+  <div id="hud">
+    <div id="lives">❤️❤️❤️</div>
+    <div id="chestCount">📦 0/10</div>
+  </div>
+  <div id="scoreBar">
+    <div id="scoreLabel">คะแนน 0/10 — ต้องได้ 6 คะแนนเพื่อพบนางอุสา</div>
+    <div id="scoreBg"><div id="scoreFill"></div></div>
+  </div>
+  <div id="controls">
+    <div class="ctrl-left">
+      <div class="btn" id="btnLeft">◀</div>
+      <div class="btn" id="btnRight">▶</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+      <div class="btn" id="btnUp" style="align-self:center">▲</div>
+    </div>
+    <div class="ctrl-right">
+      <div class="btn" id="btnSlash">⚔️</div>
+      <div class="btn" id="btnPower">💥</div>
+    </div>
+  </div>
+</div>
+
+<div id="overlay">
+  <img id="titleImg" src="https://chaochichi.github.io/storyAusaBaros/game_title.png" alt="ผจญภัยตามหานางอุสา">
+  <div id="howto">วิธีเล่น: ◀▶ เดิน | ▲ กระโดด | ⚔️ ฟันดาบ | 💥 ปล่อยพลัง<br>เก็บหีบ 📦 ตอบคำถาม | ได้ 6/10 คะแนน ชนะ!</div>
+  <button id="startBtn" onclick="startGame()">▶ เริ่มเกม</button>
+</div>
+
+<div id="popup">
+  <div id="popupBox">
+    <div id="popQ"></div>
+    <div id="popChoices"></div>
+    <div id="popFb"></div>
+    <button id="popContinue" onclick="closePopup()">▶ เล่นต่อ</button>
+  </div>
+</div>
+
+<div id="endScreen">
+  <div id="endEmoji"></div>
+  <div id="endTitle"></div>
+  <div id="endMsg"></div>
+  <div id="endScore"></div>
+  <button id="restartBtn" onclick="restartGame()">🔄 เล่นใหม่</button>
+</div>
+
+<script>
+const BASE = 'https://chaochichi.github.io/storyAusaBaros/';
+const FRAME_W = 180, FRAME_H = 180;
+
+const questions = [
+  {q:'ตำนาน "อุสา บารส" เป็นนิทานพื้นบ้านของภาคใด?',choices:['ภาคเหนือ','ภาคอีสาน','ภาคกลาง','ภาคใต้'],ans:1,explain:'อุสา บารส เป็นตำนานพื้นบ้านของภาคอีสาน'},
+  {q:'นางอุสาถูกกักขังอยู่ที่ไหน?',choices:['ถ้ำ','พระราชวัง','หอสูง','เรือนแพ'],ans:2,explain:'พระยาพานสร้างหอสูงกักขังนางอุสา'},
+  {q:'ท้าวบารสพบนางอุสาได้อย่างไร?',choices:['พบที่งานบุญ','ตามกระทงที่ลอยมา','ปีนหอขึ้นไป','พบที่ตลาด'],ans:1,explain:'ท้าวบารสตามกระทงของนางอุสาไป'},
+  {q:'หอนางอุสาตั้งอยู่ที่ใด?',choices:['ภูกระดึง','ภูพระบาท','ภูหลวง','ภูเรือ'],ans:1,explain:'หอนางอุสาอยู่ในอุทยานประวัติศาสตร์ภูพระบาท'},
+  {q:'ใครคือพ่อของนางอุสา?',choices:['ท้าวบารส','พระยาแถน','พระยาพาน','ท้าวก่ำกาดำ'],ans:2,explain:'พระยาพานเป็นพ่อของนางอุสา'},
+  {q:'ตำนานอุสา บารส สอนเรื่องอะไรเป็นหลัก?',choices:['ความขยัน','ความรักและซื่อสัตย์','ความกล้าหาญ','ความประหยัด'],ans:1,explain:'สอนเรื่องความรักและความซื่อสัตย์'},
+  {q:'ภูพระบาทได้รับการขึ้นทะเบียนเป็นอะไร?',choices:['อุทยานแห่งชาติ','มรดกโลก UNESCO','เขตอนุรักษ์พันธุ์สัตว์','แหล่งประวัติศาสตร์จังหวัด'],ans:1,explain:'ภูพระบาทได้รับการขึ้นทะเบียนมรดกโลก UNESCO ปี 2566'},
+  {q:'ตำนานพื้นบ้านมีความสำคัญอย่างไร?',choices:['สร้างความกลัว','สืบทอดวัฒนธรรมชุมชน','สร้างรายได้','สอนวิทยาศาสตร์'],ans:1,explain:'ตำนานพื้นบ้านสืบทอดวัฒนธรรมจากรุ่นสู่รุ่น'},
+  {q:'การลอยกระทงของนางอุสา หมายถึงอะไร?',choices:['ขอพรให้ฝนตก','อธิษฐานหาคู่ครอง','ไหว้พระแม่คงคา','ส่งความชั่วร้าย'],ans:1,explain:'นางอุสาลอยกระทงอธิษฐานหาคู่ครองที่ดี'},
+  {q:'นักเรียนควรภูมิใจในตำนานท้องถิ่นเพราะเหตุใด?',choices:['เพราะได้เกรดดี','เพราะเป็นมรดกวัฒนธรรม','เพราะครูบังคับ','เพราะไม่มีที่อื่น'],ans:1,explain:'ตำนานพื้นบ้านเป็นมรดกวัฒนธรรมที่ควรอนุรักษ์'}
+];
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let W, H, scaleX, scaleY;
+let gameRunning = false;
+let keys = {};
+let score = 0, lives = 3, chestsOpened = 0;
+let popupOpen = false;
+let currentChestQ = null;
+
+const imgs = {};
+const imgFiles = ['baras_sprite','usa_sprite','demon_sprite','bg_game','game_title'];
+
+let player, demons, chests, bullets, particles;
+let bgX = 0;
+let frameCount = 0;
+
+function resize() {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+  const portrait = H > W;
+  document.getElementById('landscape-msg').style.display = portrait ? 'flex' : 'none';
+}
+
+function loadImages() {
+  let loaded = 0;
+  imgFiles.forEach(name => {
+    const img = new Image();
+    img.src = BASE + name + '.png';
+    img.onload = () => {
+      loaded++;
+      if (loaded === imgFiles.length) {
+        document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('howto').style.display = 'block';
+      }
+    };
+    img.onerror = () => { loaded++; if(loaded===imgFiles.length){document.getElementById('startBtn').style.display='block';document.getElementById('howto').style.display='block';} };
+    imgs[name] = img;
+  });
+}
+
+function initGame() {
+  const groundY = H * 0.78;
+  player = {
+    x: W * 0.1, y: groundY, w: 80, h: 80,
+    vx: 0, vy: 0, onGround: true,
+    frame: 0, row: 0, frameTimer: 0,
+    state: 'idle', invincible: 0,
+    slashTimer: 0, powerTimer: 0,
+    facing: 1
+  };
+  demons = [];
+  chests = [];
+  bullets = [];
+  particles = [];
+  score = 0; lives = 3; chestsOpened = 0;
+  bgX = 0;
+
+  // Place chests
+  const chestPositions = [0.2,0.28,0.38,0.48,0.58,0.68,0.78,0.88,1.1,1.3];
+  const shuffled = [...questions].sort(()=>Math.random()-.5);
+  chestPositions.forEach((pos, i) => {
+    chests.push({
+      x: W * pos, y: groundY - 30, w: 50, h: 50,
+      opened: false, question: shuffled[i % shuffled.length],
+      bobOffset: Math.random() * Math.PI * 2
+    });
+  });
+
+  // Place demons
+  for(let i = 0; i < 6; i++) {
+    spawnDemon(W * (0.35 + i * 0.18));
+  }
+
+  updateHUD();
+}
+
+function spawnDemon(x) {
+  const groundY = H * 0.78;
+  demons.push({
+    x, y: groundY, w: 72, h: 72,
+    vx: -1.2, frame: 0, row: 1, frameTimer: 0,
+    hp: 2, state: 'walk', hitTimer: 0, facing: -1
+  });
+}
+
+function startGame() {
+  document.getElementById('overlay').style.display = 'none';
+  initGame();
+  gameRunning = true;
+  requestAnimationFrame(gameLoop);
+}
+
+function updateHUD() {
+  document.getElementById('lives').textContent = '❤️'.repeat(lives) + (lives<3?'🖤'.repeat(3-lives):'');
+  document.getElementById('chestCount').textContent = `📦 ${chestsOpened}/10`;
+  document.getElementById('scoreLabel').textContent = `คะแนน ${score}/10 — ต้องได้ 6 คะแนนเพื่อพบนางอุสา`;
+  document.getElementById('scoreFill').style.width = (score/10*100) + '%';
+}
+
+function drawSprite(img, row, col, x, y, w, h, flipX) {
+  if (!img || !img.complete) {
+    ctx.fillStyle = '#ff9800';
+    ctx.fillRect(x, y, w, h);
+    return;
+  }
+  ctx.save();
+  if (flipX) {
+    ctx.translate(x + w, y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(img, col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H, 0, 0, w, h);
+  } else {
+    ctx.drawImage(img, col*FRAME_W, row*FRAME_H, FRAME_W, FRAME_H, x, y, w, h);
+  }
+  ctx.restore();
+}
+
+function gameLoop() {
+  if (!gameRunning) return;
+  frameCount++;
+  update();
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+function update() {
+  if (popupOpen) return;
+  const groundY = H * 0.78;
+  const speed = 3.5;
+
+  // BG scroll
+  bgX -= 1.5;
+  if (bgX <= -W) bgX += W;
+
+  // Player movement
+  player.vx = 0;
+  if (keys['left']) { player.vx = -speed; player.facing = -1; }
+  if (keys['right']) { player.vx = speed; player.facing = 1; }
+  if (keys['jump'] && player.onGround) {
+    player.vy = -14;
+    player.onGround = false;
+    keys['jump'] = false;
+  }
+  if (keys['slash'] && player.slashTimer <= 0) {
+    player.slashTimer = 20;
+    player.state = 'slash';
+    addParticle(player.x + (player.facing>0?player.w:0), player.y + player.h/2, '#ffd700', 8);
+    keys['slash'] = false;
+  }
+  if (keys['power'] && player.powerTimer <= 0) {
+    player.powerTimer = 30;
+    player.state = 'power';
+    bullets.push({
+      x: player.x + player.w/2, y: player.y + player.h/2,
+      vx: player.facing * 8, vy: 0, w: 20, h: 20, timer: 60
+    });
+    keys['power'] = false;
+  }
+
+  player.x += player.vx;
+  player.vy += 0.6;
+  player.y += player.vy;
+  if (player.y >= groundY) { player.y = groundY; player.vy = 0; player.onGround = true; }
+  player.x = Math.max(0, Math.min(W - player.w, player.x));
+  if (player.invincible > 0) player.invincible--;
+  if (player.slashTimer > 0) player.slashTimer--;
+  if (player.powerTimer > 0) player.powerTimer--;
+
+  // Animate player
+  player.frameTimer++;
+  if (player.frameTimer >= 8) {
+    player.frameTimer = 0;
+    if (player.slashTimer > 0) { player.row = 3; player.frame = (player.frame+1)%4; }
+    else if (player.powerTimer > 0) { player.row = 4; player.frame = (player.frame+1)%4; }
+    else if (!player.onGround) { player.row = 2; player.frame = (player.frame+1)%4; }
+    else if (player.vx !== 0) { player.row = 1; player.frame = (player.frame+1)%6; }
+    else { player.row = 0; player.frame = (player.frame+1)%4; }
+  }
+
+  // Bullets
+  bullets = bullets.filter(b => {
+    b.x += b.vx; b.y += b.vy; b.timer--;
+    return b.timer > 0 && b.x > 0 && b.x < W;
+  });
+
+  // Demons
+  demons.forEach(d => {
+    if (d.state === 'dead') return;
+    d.x += d.vx;
+    if (d.x < 0 || d.x > W) d.vx *= -1;
+    d.frameTimer++;
+    if (d.frameTimer >= 8) { d.frameTimer=0; d.frame=(d.frame+1)%4; }
+    if (d.hitTimer > 0) d.hitTimer--;
+
+    // Bullet hit demon
+    bullets.forEach((b, bi) => {
+      if (Math.abs(b.x - d.x - d.w/2) < 40 && Math.abs(b.y - d.y - d.h/2) < 40) {
+        d.hp--;
+        d.hitTimer = 10;
+        bullets.splice(bi, 1);
+        addParticle(d.x+d.w/2, d.y+d.h/2, '#a855f7', 6);
+        if (d.hp <= 0) { d.state='dead'; d.row=5; d.frame=0; addParticle(d.x+d.w/2, d.y+d.h/2, '#ffd700', 12); }
+      }
+    });
+
+    // Slash hit demon
+    if (player.slashTimer > 15) {
+      const slashX = player.facing > 0 ? player.x + player.w : player.x - 80;
+      if (Math.abs(slashX - d.x) < 80 && Math.abs(player.y - d.y) < 60) {
+        d.hp--;
+        d.hitTimer = 10;
+        addParticle(d.x+d.w/2, d.y+d.h/2, '#ffd700', 8);
+        if (d.hp <= 0) { d.state='dead'; d.row=5; d.frame=0; }
+      }
+    }
+
+    // Player hit by demon
+    if (player.invincible <= 0 && d.state !== 'dead') {
+      if (Math.abs(player.x - d.x) < 55 && Math.abs(player.y - d.y) < 55) {
+        lives--;
+        player.invincible = 90;
+        addParticle(player.x+player.w/2, player.y+player.h/2, '#e74c3c', 10);
+        if (lives <= 0) { showEnd(false); return; }
+        updateHUD();
+      }
+    }
+  });
+
+  // Chests
+  chests.forEach(c => {
+    if (c.opened) return;
+    if (Math.abs(player.x + player.w/2 - c.x - c.w/2) < 55 &&
+        Math.abs(player.y + player.h/2 - c.y - c.h/2) < 55) {
+      if (!popupOpen) {
+        c.opened = true;
+        chestsOpened++;
+        showQuestion(c.question);
+        updateHUD();
+      }
+    }
+  });
+
+  // Particles
+  particles = particles.filter(p => {
+    p.x += p.vx; p.y += p.vy; p.vy += 0.2;
+    p.life--; return p.life > 0;
+  });
+
+  // Check win by chests
+  if (chestsOpened >= 10 && !popupOpen) {
+    setTimeout(() => showEnd(score >= 6), 500);
+  }
+}
+
+function addParticle(x, y, color, count) {
+  for(let i=0;i<count;i++) {
+    particles.push({
+      x, y, vx:(Math.random()-0.5)*6, vy:(Math.random()-0.5)*6-2,
+      color, life:30+Math.random()*20, size:4+Math.random()*6
+    });
+  }
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // BG scrolling
+  if (imgs['bg_game'] && imgs['bg_game'].complete) {
+    ctx.drawImage(imgs['bg_game'], bgX, 0, W, H);
+    ctx.drawImage(imgs['bg_game'], bgX + W, 0, W, H);
+  } else {
+    ctx.fillStyle = '#2d5a1b';
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Ground line
+  const groundY = H * 0.78;
+  ctx.fillStyle = 'rgba(0,0,0,0.15)';
+  ctx.fillRect(0, groundY + 80, W, H);
+
+  // Chests
+  chests.forEach(c => {
+    if (c.opened) return;
+    const bob = Math.sin(frameCount * 0.05 + c.bobOffset) * 4;
+    ctx.fillStyle = '#8b4513';
+    ctx.beginPath();
+    ctx.roundRect(c.x, c.y + bob, c.w, c.h, 8);
+    ctx.fill();
+    ctx.strokeStyle = '#ffd700';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.fillStyle = '#ffd700';
+    ctx.font = 'bold 24px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('📦', c.x + c.w/2, c.y + c.h/2 + 8 + bob);
+  });
+
+  // Demons
+  demons.forEach(d => {
+    if (d.state === 'dead') return;
+    if (d.hitTimer > 0 && Math.floor(frameCount/3)%2===0) return;
+    drawSprite(imgs['demon_sprite'], d.row, d.frame, d.x, d.y, d.w, d.h, d.vx > 0);
+  });
+
+  // Player (blink when invincible)
+  if (player.invincible <= 0 || Math.floor(frameCount/4)%2===0) {
+    drawSprite(imgs['baras_sprite'], player.row, player.frame,
+      player.x, player.y, player.w, player.h, player.facing < 0);
+  }
+
+  // Bullets
+  bullets.forEach(b => {
+    ctx.fillStyle = '#ffd700';
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, 10, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // Particles
+  particles.forEach(p => {
+    ctx.globalAlpha = p.life/50;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+
+function showQuestion(q) {
+  popupOpen = true;
+  gameRunning = false;
+  currentChestQ = q;
+  document.getElementById('popQ').textContent = q.q;
+  const div = document.getElementById('popChoices');
+  div.innerHTML = '';
+  q.choices.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'pchoice';
+    btn.textContent = ['ก. ','ข. ','ค. ','ง. '][i] + c;
+    btn.onclick = () => answerQ(i, q, btn);
+    div.appendChild(btn);
+  });
+  document.getElementById('popFb').style.display = 'none';
+  document.getElementById('popFb').className = 'popFb';
+  document.getElementById('popContinue').style.display = 'none';
+  document.getElementById('popup').style.display = 'flex';
+}
+
+function answerQ(i, q, btn) {
+  document.querySelectorAll('.pchoice').forEach(b => b.onclick = null);
+  const correct = i === q.ans;
+  if (correct) { score++; btn.classList.add('correct'); addParticle(W/2,H/2,'#ffd700',15); }
+  else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.pchoice')[q.ans].classList.add('correct');
+  }
+  const fb = document.getElementById('popFb');
+  fb.className = 'popFb ' + (correct?'correct':'wrong');
+  fb.textContent = (correct ? '✅ ถูกต้อง! ' : '❌ ยังไม่ถูก — ') + q.explain;
+  fb.style.display = 'block';
+  document.getElementById('popContinue').style.display = 'block';
+  updateHUD();
+}
+
+function closePopup() {
+  document.getElementById('popup').style.display = 'none';
+  popupOpen = false;
+  gameRunning = true;
+  requestAnimationFrame(gameLoop);
+  if (chestsOpened >= 10) setTimeout(() => showEnd(score >= 6), 800);
+}
+
+function showEnd(win) {
+  gameRunning = false;
+  const s = document.getElementById('endScreen');
+  document.getElementById('endEmoji').textContent = win ? '🏆' : '💔';
+  document.getElementById('endTitle').textContent = win ? 'ยินดีด้วย! ท้าวบารสพบนางอุสาแล้ว!' : 'เสียใจด้วย...';
+  document.getElementById('endMsg').textContent = win
+    ? 'ท้าวบารสผ่านการผจญภัยและตอบคำถามได้ครบ\nจนได้ครองรักกับนางอุสาแล้ว! 💑'
+    : `ท้าวบารสได้คะแนนไม่ถึง 6 คะแนน\nลองใหม่อีกครั้งนะคะ!`;
+  document.getElementById('endScore').textContent = `คะแนนที่ได้: ${score}/10`;
+  s.style.display = 'flex';
+
+  if (win && imgs['usa_sprite']) {
+    const c = document.createElement('canvas');
+    c.width = 160; c.height = 160;
+    const x = c.getContext('2d');
+    x.drawImage(imgs['usa_sprite'], 0, 0, FRAME_W, FRAME_H, 0, 0, 160, 160);
+    c.style.cssText = 'border-radius:50%;margin:10px auto;display:block;border:3px solid #ffd700';
+    s.insertBefore(c, document.getElementById('endTitle'));
+  }
+}
+
+function restartGame() {
+  document.getElementById('endScreen').style.display = 'none';
+  document.querySelectorAll('#endScreen canvas').forEach(c=>c.remove());
+  initGame();
+  gameRunning = true;
+  requestAnimationFrame(gameLoop);
+}
+
+// Touch controls
+function setupControls() {
+  const btns = {
+    'btnLeft': 'left', 'btnRight': 'right', 'btnUp': 'jump',
+    'btnSlash': 'slash', 'btnPower': 'power'
+  };
+  Object.entries(btns).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    el.addEventListener('touchstart', e => { e.preventDefault(); keys[key]=true; el.classList.add('pressed'); }, {passive:false});
+    el.addEventListener('touchend', e => { e.preventDefault(); keys[key]=false; el.classList.remove('pressed'); }, {passive:false});
+    el.addEventListener('mousedown', () => { keys[key]=true; });
+    el.addEventListener('mouseup', () => { keys[key]=false; });
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key==='ArrowLeft') keys['left']=true;
+    if(e.key==='ArrowRight') keys['right']=true;
+    if(e.key===' '||e.key==='ArrowUp') keys['jump']=true;
+    if(e.key==='z'||e.key==='Z') keys['slash']=true;
+    if(e.key==='x'||e.key==='X') keys['power']=true;
+  });
+  document.addEventListener('keyup', e => {
+    if(e.key==='ArrowLeft') keys['left']=false;
+    if(e.key==='ArrowRight') keys['right']=false;
+    if(e.key===' '||e.key==='ArrowUp') keys['jump']=false;
+  });
+}
+
+// Title screen timer
+setTimeout(() => {
+  document.getElementById('startBtn').style.display = 'block';
+  document.getElementById('howto').style.display = 'block';
+}, 3000);
+
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 300));
+resize();
+setupControls();
+loadImages();
+</script>
+</body>
+</html>
