@@ -538,10 +538,14 @@ function setupControls() {
   };
   Object.entries(btns).forEach(([id, key]) => {
     const el = document.getElementById(id);
-    el.addEventListener('touchstart', e => { e.preventDefault(); keys[key]=true; el.classList.add('pressed'); }, {passive:false});
-    el.addEventListener('touchend', e => { e.preventDefault(); keys[key]=false; el.classList.remove('pressed'); }, {passive:false});
-    el.addEventListener('mousedown', () => { keys[key]=true; });
-    el.addEventListener('mouseup', () => { keys[key]=false; });
+    const press = e => { e.preventDefault(); e.stopPropagation(); keys[key]=true; el.classList.add('pressed'); };
+    const release = e => { e.preventDefault(); e.stopPropagation(); keys[key]=false; el.classList.remove('pressed'); };
+    el.addEventListener('touchstart', press, {passive:false});
+    el.addEventListener('touchend', release, {passive:false});
+    el.addEventListener('touchcancel', release, {passive:false});
+    el.addEventListener('mousedown', e => { e.preventDefault(); keys[key]=true; el.classList.add('pressed'); });
+    el.addEventListener('mouseup', () => { keys[key]=false; el.classList.remove('pressed'); });
+    el.addEventListener('mouseleave', () => { keys[key]=false; el.classList.remove('pressed'); });
   });
   document.addEventListener('keydown', e => {
     if(e.key==='ArrowLeft') keys['left']=true;
@@ -554,7 +558,11 @@ function setupControls() {
     if(e.key==='ArrowLeft') keys['left']=false;
     if(e.key==='ArrowRight') keys['right']=false;
     if(e.key===' '||e.key==='ArrowUp') keys['jump']=false;
+    if(e.key==='z'||e.key==='Z') keys['slash']=false;
+    if(e.key==='x'||e.key==='X') keys['power']=false;
   });
+  window.addEventListener('mouseup', () => { Object.keys(keys).forEach(k=>keys[k]=false); });
+  document.addEventListener('visibilitychange', () => { if(document.hidden) Object.keys(keys).forEach(k=>keys[k]=false); });
 }
 
 // Title screen timer
