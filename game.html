@@ -107,7 +107,7 @@ body{background:#000;overflow:hidden;font-family:'Sarabun',sans-serif;touch-acti
 
 <script>
 const BASE = 'https://chaochichi.github.io/storyAusaBaros/';
-const FRAME_W = 180, FRAME_H = 180;
+const FRAME_W = 125, FRAME_H = 125;
 
 const questions = [
   {q:'ตำนาน "อุสา บารส" เป็นนิทานพื้นบ้านของภาคใด?',choices:['ภาคเหนือ','ภาคอีสาน','ภาคกลาง','ภาคใต้'],ans:1,explain:'อุสา บารส เป็นตำนานพื้นบ้านของภาคอีสาน'},
@@ -129,10 +129,32 @@ let W, H, scaleX, scaleY;
 let gameRunning = false;
 let keys = {};
 let score = 0, lives = 3, chestsOpened = 0;
+let demonSpawnTimer = 0, demonSpawnCount = 0;
 let popupOpen = false;
 let currentChestQ = null;
 
 const imgs = {};
+const processedImgs = {};
+
+function removeBlackBg(img, name) {
+  const c = document.createElement('canvas');
+  c.width = img.width; c.height = img.height;
+  const ctx2 = c.getContext('2d');
+  ctx2.drawImage(img, 0, 0);
+  try {
+    const d = ctx2.getImageData(0, 0, c.width, c.height);
+    for (let i = 0; i < d.data.length; i += 4) {
+      const r=d.data[i], g=d.data[i+1], b=d.data[i+2];
+      if (r<30 && g<30 && b<30) d.data[i+3] = 0;
+    }
+    ctx2.putImageData(d, 0, 0);
+    const ni = new Image();
+    ni.src = c.toDataURL();
+    processedImgs[name] = ni;
+  } catch(e) {
+    processedImgs[name] = img;
+  }
+}
 const imgFiles = ['baras_sprite','usa_sprite','demon_sprite','bg_game','game_title'];
 
 let player, demons, chests, bullets, particles;
@@ -155,6 +177,7 @@ function loadImages() {
     const img = new Image();
     img.src = BASE + name + '.png';
     img.onload = () => {
+      if (['baras_sprite','demon_sprite','usa_sprite'].includes(name)) removeBlackBg(img, name);
       loaded++;
       if (loaded === imgFiles.length) {
         document.getElementById('startBtn').style.display = 'block';
@@ -182,6 +205,8 @@ function initGame() {
   particles = [];
   score = 0; lives = 3; chestsOpened = 0;
   bgX = 0;
+  demonSpawnTimer = 0;
+  demonSpawnCount = 1;
 
   // Place chests
   const chestPositions = [0.2,0.28,0.38,0.48,0.58,0.68,0.78,0.88,1.1,1.3];
@@ -194,10 +219,11 @@ function initGame() {
     });
   });
 
-  // Place demons
-  for(let i = 0; i < 6; i++) {
-    spawnDemon(W * (0.35 + i * 0.18));
-  }
+  // Spawn first demon only, rest spawn over time
+  demons = [];
+  spawnDemon(W * 0.6);
+  demonSpawnTimer = 0;
+  demonSpawnCount = 1;
 
   updateHUD();
 }
@@ -227,6 +253,8 @@ function updateHUD() {
 }
 
 function drawSprite(img, row, col, x, y, w, h, flipX) {
+  const key = Object.keys(imgs).find(k => imgs[k] === img);
+  if (key && processedImgs[key] && processedImgs[key].complete) img = processedImgs[key];
 
   if (!img || !img.complete) {
     ctx.fillStyle = '#ff9800';
@@ -313,6 +341,16 @@ function update() {
     return b.timer > 0 && b.x > 0 && b.x < W;
   });
 
+  // Spawn demons gradually - max 3 at a time
+  const aliveDemon = demons.filter(d => d.state !== 'dead').length;
+  demonSpawnTimer++;
+  if (demonSpawnTimer > 480 && aliveDemon < 3 && demonSpawnCount < 20) {
+    demonSpawnTimer = 0;
+    demonSpawnCount++;
+    const side = Math.random() > 0.5 ? W * 0.85 : W * 0.15;
+    spawnDemon(side);
+  }
+
   // Demons
   demons.forEach(d => {
     if (d.state === 'dead') return;
@@ -363,19 +401,20 @@ function update() {
     }
   });
 
-  // Chests
-  chests.forEach(c => {
-    if (c.opened) return;
-    if (Math.abs(player.x + player.w/2 - c.x - c.w/2) < 55 &&
-        Math.abs(player.y + player.h/2 - c.y - c.h/2) < 55) {
-      if (!popupOpen) {
+  // Chests - one at a time, require player to stop on it
+  if (!popupOpen) {
+    for (let c of chests) {
+      if (c.opened) continue;
+      if (Math.abs(player.x + player.w/2 - c.x - c.w/2) < 45 &&
+          Math.abs(player.y + player.h/2 - c.y - c.h/2) < 45) {
         c.opened = true;
         chestsOpened++;
         showQuestion(c.question);
         updateHUD();
+        break;
       }
     }
-  });
+  }
 
   // Particles
   particles = particles.filter(p => {
@@ -431,6 +470,16 @@ function draw() {
     ctx.textAlign = 'center';
     ctx.fillText('📦', c.x + c.w/2, c.y + c.h/2 + 8 + bob);
   });
+
+  // Spawn demons gradually - max 3 at a time
+  const aliveDemon = demons.filter(d => d.state !== 'dead').length;
+  demonSpawnTimer++;
+  if (demonSpawnTimer > 480 && aliveDemon < 3 && demonSpawnCount < 20) {
+    demonSpawnTimer = 0;
+    demonSpawnCount++;
+    const side = Math.random() > 0.5 ? W * 0.85 : W * 0.15;
+    spawnDemon(side);
+  }
 
   // Demons
   demons.forEach(d => {
