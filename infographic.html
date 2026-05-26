@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Infographic — อุสา บารส</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Sarabun',sans-serif;min-height:100vh;
+  background:url('https://chaochichi.github.io/storyAusaBaros/ChatGPT%20Image%2025%20%E0%B8%9E.%E0%B8%84.%202569%2015_29_18.png') center center/cover no-repeat fixed}
+.overlay{position:fixed;inset:0;background:linear-gradient(180deg,#fff9ee99,#fff3e0cc);z-index:0}
+.container{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:16px 14px 40px}
+
+/* Header Image */
+.header-img{width:100%;border-radius:20px;display:block;margin-bottom:16px;box-shadow:0 8px 32px #00000033}
+
+/* Section Title */
+.section-title{text-align:center;margin-bottom:12px;padding:12px 16px;
+  background:linear-gradient(135deg,#fff9eedd,#fff3e0dd);
+  border-radius:16px;border:2px solid #ff9800;backdrop-filter:blur(8px)}
+.section-badge{display:inline-block;background:linear-gradient(90deg,#e65100,#ff9800);
+  color:#fff;font-size:11px;font-weight:800;padding:4px 14px;border-radius:20px;margin-bottom:6px}
+.section-title h2{font-size:18px;font-weight:800;color:#e65100}
+
+/* Image Map Container */
+.img-map{position:relative;display:block;margin-bottom:16px;border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 32px #00000033}
+.img-map img{width:100%;display:block}
+
+/* Hotspot buttons */
+.hotspot{position:absolute;cursor:pointer;border-radius:12px;
+  border:3px solid transparent;transition:all .2s;
+  background:transparent}
+.hotspot:hover{background:rgba(255,152,0,0.15);border-color:rgba(255,152,0,0.6);
+  transform:scale(1.02)}
+.hotspot:active{transform:scale(0.98)}
+
+/* Popup Overlay */
+.popup-overlay{position:fixed;inset:0;z-index:200;
+  background:#000000bb;display:none;align-items:center;justify-content:center;
+  padding:20px;backdrop-filter:blur(6px)}
+.popup-overlay.show{display:flex}
+.popup-box{background:linear-gradient(135deg,#fff9ee,#fff3e0);
+  border-radius:24px;border:3px solid #ff9800;
+  padding:24px 20px;width:100%;max-width:400px;
+  box-shadow:0 16px 48px #00000066;
+  max-height:80vh;overflow-y:auto;
+  animation:popIn .3s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.popup-emoji{font-size:48px;text-align:center;margin-bottom:10px}
+.popup-title{font-size:20px;font-weight:800;color:#e65100;text-align:center;margin-bottom:8px}
+.popup-subtitle{font-size:14px;color:#bf360c;font-weight:700;text-align:center;margin-bottom:12px}
+.popup-body{font-size:15px;color:#5d2e00;font-weight:600;line-height:1.7;margin-bottom:16px}
+.popup-fact{background:#fff8e1;border-radius:12px;border-left:4px solid #ff9800;
+  padding:10px 14px;font-size:14px;color:#e65100;font-weight:700;margin-bottom:14px}
+.btn-close{width:100%;padding:13px;background:linear-gradient(135deg,#ff9800,#ffb300);
+  color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Sarabun',sans-serif;box-shadow:0 4px 16px #ff980055}
+.btn-close:hover{opacity:.9}
+.btn-map{width:100%;padding:13px;background:linear-gradient(135deg,#1565c0,#1976d2);
+  color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;
+  cursor:pointer;font-family:'Sarabun',sans-serif;margin-bottom:10px;
+  box-shadow:0 4px 16px #1565c055}
+
+/* Nav tabs */
+.nav-tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab{flex:1;padding:10px 6px;border:2px solid #ff9800;border-radius:12px;
+  background:#fff8e1;font-size:13px;font-weight:800;color:#e65100;
+  cursor:pointer;text-align:center;transition:all .2s;font-family:'Sarabun',sans-serif}
+.tab.active{background:linear-gradient(135deg,#ff9800,#ffb300);color:#fff;border-color:#ff9800}
+.tab:hover:not(.active){background:#fff3cd}
+
+/* Sections */
+.section{display:none}
+.section.active{display:block}
+
+/* Moral cards clickable */
+.moral-hotspot{position:absolute;cursor:pointer;border-radius:16px;
+  border:3px solid transparent;transition:all .2s;background:transparent}
+.moral-hotspot:hover{background:rgba(255,152,0,0.15);border-color:rgba(255,152,0,0.6)}
+</style>
+</head>
+<body>
+<div class="overlay"></div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <div class="popup-emoji" id="popEmoji"></div>
+    <div class="popup-title" id="popTitle"></div>
+    <div class="popup-subtitle" id="popSub"></div>
+    <div class="popup-body" id="popBody"></div>
+    <div class="popup-fact" id="popFact"></div>
+    <button class="btn-map" id="btnMap" onclick="openMap()" style="display:none">
+      🗺️ ดูสถานที่จริงใน Google Maps
+    </button>
+    <button class="btn-close" onclick="closePopup()">✕ ปิด</button>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Header -->
+  <img class="header-img"
+    src="https://chaochichi.github.io/storyAusaBaros/Header.png"
+    alt="อุสา บารส">
+
+  <!-- Nav Tabs -->
+  <div class="nav-tabs">
+    <button class="tab active" onclick="showTab(0)">📜 Timeline</button>
+    <button class="tab" onclick="showTab(1)">🗺️ แผนที่</button>
+    <button class="tab" onclick="showTab(2)">💝 คุณธรรม</button>
+  </div>
+
+  <!-- Section 1: Timeline -->
+  <div class="section active" id="sec0">
+    <div class="section-title">
+      <div class="section-badge">📜 TIMELINE</div>
+      <h2>ตำนานอุสา บารส — 5 ตอน</h2>
+    </div>
+    <div class="img-map">
+      <img src="https://chaochichi.github.io/storyAusaBaros/InfoTimeline.png" alt="Timeline อุสา บารส">
+      <!-- ตอนที่ 1 -->
+      <div class="hotspot" style="top:22%;left:2%;width:52%;height:13%"
+        onclick="showPopup('timeline',0)"></div>
+      <!-- ตอนที่ 2 -->
+      <div class="hotspot" style="top:36%;left:46%;width:52%;height:13%"
+        onclick="showPopup('timeline',1)"></div>
+      <!-- ตอนที่ 3 -->
+      <div class="hotspot" style="top:50%;left:2%;width:52%;height:13%"
+        onclick="showPopup('timeline',2)"></div>
+      <!-- ตอนที่ 4 -->
+      <div class="hotspot" style="top:63%;left:46%;width:52%;height:13%"
+        onclick="showPopup('timeline',3)"></div>
+      <!-- ตอนที่ 5 -->
+      <div class="hotspot" style="top:77%;left:2%;width:52%;height:13%"
+        onclick="showPopup('timeline',4)"></div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#e65100;font-weight:700;padding:8px">
+      👆 แตะแต่ละตอนเพื่อดูรายละเอียด
+    </div>
+  </div>
+
+  <!-- Section 2: Map -->
+  <div class="section" id="sec1">
+    <div class="section-title">
+      <div class="section-badge">🗺️ แผนที่</div>
+      <h2>สถานที่จริงในตำนาน</h2>
+    </div>
+    <div class="img-map">
+      <img src="https://chaochichi.github.io/storyAusaBaros/InfoMap.png" alt="แผนที่ อุสา บารส">
+      <!-- ภูพระบาท pin 1 -->
+      <div class="hotspot" style="top:38%;left:10%;width:45%;height:22%"
+        onclick="showPopup('map',0)"></div>
+      <!-- หอนางอุสา pin 2 -->
+      <div class="hotspot" style="top:60%;left:42%;width:35%;height:20%"
+        onclick="showPopup('map',1)"></div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#e65100;font-weight:700;padding:8px">
+      👆 แตะหมุดเพื่อดูข้อมูลสถานที่
+    </div>
+  </div>
+
+  <!-- Section 3: Moral -->
+  <div class="section" id="sec2">
+    <div class="section-title">
+      <div class="section-badge">💝 คุณธรรม</div>
+      <h2>คุณธรรมจากตำนาน</h2>
+    </div>
+    <div class="img-map">
+      <img src="https://chaochichi.github.io/storyAusaBaros/InfoMoral.png" alt="คุณธรรม อุสา บารส">
+      <!-- ความรัก -->
+      <div class="moral-hotspot" style="top:20%;left:2%;width:46%;height:30%"
+        onclick="showPopup('moral',0)"></div>
+      <!-- ความซื่อสัตย์ -->
+      <div class="moral-hotspot" style="top:20%;left:52%;width:46%;height:30%"
+        onclick="showPopup('moral',1)"></div>
+      <!-- การเสียสละ -->
+      <div class="moral-hotspot" style="top:60%;left:2%;width:46%;height:28%"
+        onclick="showPopup('moral',2)"></div>
+      <!-- ความภูมิใจ -->
+      <div class="moral-hotspot" style="top:60%;left:52%;width:46%;height:28%"
+        onclick="showPopup('moral',3)"></div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#e65100;font-weight:700;padding:8px">
+      👆 แตะแต่ละ Card เพื่อเรียนรู้คุณธรรม
+    </div>
+  </div>
+
+</div>
+
+<script>
+const data = {
+  timeline: [
+    {
+      emoji:'🏰',title:'ตอนที่ 1 — หอนางอุสา',
+      sub:'พระยาพานสร้างหอสูงกักขังนางอุสา',
+      body:'พระยาพาน พระบิดาของนางอุสา ได้สร้างหอสูงอันแข็งแกร่งบนยอดเขา เพื่อกักขังนางอุสาไว้ ไม่ให้พบปะกับชายหนุ่มใด เพราะกลัวว่าลูกสาวจะถูกพาตัวไป',
+      fact:'💡 หอนางอุสาในตำนาน คือ "หินตั้ง" ที่พบในอุทยานประวัติศาสตร์ภูพระบาท จ.อุดรธานี',
+      map:null
+    },
+    {
+      emoji:'🪔',title:'ตอนที่ 2 — ลอยกระทง',
+      sub:'นางอุสาลอยกระทงอธิษฐานหาคู่ครอง',
+      body:'นางอุสาที่โดดเดี่ยวอยู่บนหอสูง ได้ลอยกระทงดอกบัวพร้อมอธิษฐานขอให้ได้พบคู่ครองที่ดี กระทงของนางลอยไปตามสายน้ำ...',
+      fact:'💡 ประเพณีลอยกระทงของอีสานมีรากมาจากความเชื่อนี้ สะท้อนวัฒนธรรมที่สืบทอดมาถึงปัจจุบัน',
+      map:null
+    },
+    {
+      emoji:'💑',title:'ตอนที่ 3 — พบรัก',
+      sub:'ท้าวบารสตามกระทงพบนางอุสา',
+      body:'ท้าวบารส เจ้าชายหนุ่มผู้กล้าหาญ ได้พบกระทงของนางอุสาลอยมา จึงตามกระทงไปจนพบกับนางอุสาบนหอสูง ทั้งสองพบรักกันตั้งแต่นั้นมา',
+      fact:'💡 การ "ตามกระทง" สะท้อนความกล้าหาญและความตั้งใจจริงในการแสวงหาความรักของท้าวบารส',
+      map:null
+    },
+    {
+      emoji:'❤️',title:'ตอนที่ 4 — ความรัก',
+      sub:'ความรักอันแสนงามของอุสาและบารส',
+      body:'ความรักของนางอุสาและท้าวบารสเบ่งบานอย่างงดงาม แม้ต้องเผชิญอุปสรรคจากพระยาพาน แต่ความรักที่แท้จริงก็ไม่อาจถูกขวางกั้นได้',
+      fact:'💡 ตำนานนี้สอนว่า ความรักที่แท้จริงต้องอาศัยความซื่อสัตย์และการเสียสละ',
+      map:null
+    },
+    {
+      emoji:'🏛️',title:'ตอนที่ 5 — มรดกโลก',
+      sub:'ภูพระบาท มรดกทางวัฒนธรรม',
+      body:'อุทยานประวัติศาสตร์ภูพระบาท จังหวัดอุดรธานี ซึ่งเป็นสถานที่ในตำนานอุสา บารส ได้รับการขึ้นทะเบียนเป็นมรดกโลกโดย UNESCO ในปี พ.ศ. 2566',
+      fact:'💡 ภูพระบาทเป็นมรดกโลกแหล่งที่ 7 ของประเทศไทย ประกอบด้วยโบราณสถานกว่า 40 แห่ง',
+      map:'https://maps.google.com/?q=อุทยานประวัติศาสตร์ภูพระบาท'
+    }
+  ],
+  map: [
+    {
+      emoji:'🗺️',title:'อุทยานประวัติศาสตร์ภูพระบาท',
+      sub:'อ.บ้านผือ จ.อุดรธานี',
+      body:'อุทยานประวัติศาสตร์ภูพระบาทตั้งอยู่ในอำเภอบ้านผือ จังหวัดอุดรธานี ห่างจากตัวเมืองอุดรธานีประมาณ 67 กิโลเมตร และห่างจากหนองบัวลำภูประมาณ 60 กิโลเมตร',
+      fact:'🏆 ได้รับการขึ้นทะเบียนมรดกโลก UNESCO ปี พ.ศ. 2566',
+      map:'https://maps.google.com/?q=อุทยานประวัติศาสตร์ภูพระบาท+อุดรธานี'
+    },
+    {
+      emoji:'🏰',title:'หอนางอุสา',
+      sub:'โบราณสถานในอุทยานภูพระบาท',
+      body:'หอนางอุสา คือหินทรายขนาดใหญ่ที่ตั้งอยู่บนแท่งหินสูง มีลักษณะคล้ายหอสูง ชาวบ้านเชื่อว่าเป็นสถานที่ในตำนานอุสา บารส จึงมีการบวงสรวงและสักการะเป็นประจำ',
+      fact:'📏 หอนางอุสามีความสูงประมาณ 3 เมตร ตั้งอยู่บนแท่งหินสูงกว่า 5 เมตร',
+      map:'https://maps.google.com/?q=หอนางอุสา+ภูพระบาท'
+    }
+  ],
+  moral: [
+    {
+      emoji:'❤️',title:'ความรัก',
+      sub:'รักครอบครัว รักท้องถิ่น',
+      body:'ตำนานอุสา บารส สอนให้เรารักครอบครัวและท้องถิ่นของตนเอง เช่นเดียวกับที่นางอุสารักพระบิดา และท้าวบารสรักนางอุสาอย่างแท้จริง',
+      fact:'💭 คำถามคิด: เราจะแสดงความรักต่อครอบครัวและท้องถิ่นได้อย่างไร?',
+      map:null
+    },
+    {
+      emoji:'🤝',title:'ความซื่อสัตย์',
+      sub:'รักษาคำมั่นสัญญา',
+      body:'ท้าวบารสรักษาคำมั่นสัญญาที่ให้ไว้กับนางอุสา ไม่ทอดทิ้งกัน แม้จะเผชิญอุปสรรค สอนให้เราเป็นคนที่ไว้วางใจได้',
+      fact:'💭 คำถามคิด: เราเคยรักษาสัญญาที่ให้ไว้กับเพื่อนหรือครอบครัวไหม?',
+      map:null
+    },
+    {
+      emoji:'🙏',title:'การเสียสละ',
+      sub:'เพื่อคนที่รัก',
+      body:'ทั้งนางอุสาและท้าวบารสต่างเสียสละเพื่อกัน แม้ต้องเผชิญกับความยากลำบาก การเสียสละคือความรักที่แท้จริง',
+      fact:'💭 คำถามคิด: เราเคยเสียสละอะไรให้คนที่เรารักบ้างไหม?',
+      map:null
+    },
+    {
+      emoji:'🌟',title:'ความภูมิใจ',
+      sub:'ในวัฒนธรรมอีสาน',
+      body:'ตำนานอุสา บารส คือมรดกทางวัฒนธรรมของชาวอีสาน สถานที่ในตำนานได้รับการขึ้นทะเบียนมรดกโลก เราควรภูมิใจในรากเหง้าของเราและร่วมกันอนุรักษ์ไว้',
+      fact:'💭 คำถามคิด: เราจะช่วยอนุรักษ์วัฒนธรรมท้องถิ่นของเราได้อย่างไร?',
+      map:null
+    }
+  ]
+};
+
+let currentMap = null;
+
+function showTab(idx) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.className = 'tab' + (i===idx?' active':'');
+  });
+  document.querySelectorAll('.section').forEach((s,i) => {
+    s.className = 'section' + (i===idx?' active':'');
+  });
+}
+
+function showPopup(type, idx) {
+  const d = data[type][idx];
+  document.getElementById('popEmoji').textContent = d.emoji;
+  document.getElementById('popTitle').textContent = d.title;
+  document.getElementById('popSub').textContent = d.sub;
+  document.getElementById('popBody').textContent = d.body;
+  document.getElementById('popFact').textContent = d.fact;
+  currentMap = d.map;
+  const btnMap = document.getElementById('btnMap');
+  btnMap.style.display = d.map ? 'block' : 'none';
+  document.getElementById('popup').classList.add('show');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.remove('show');
+}
+
+function openMap() {
+  if (currentMap) window.open(currentMap, '_blank');
+}
+
+document.getElementById('popup').addEventListener('click', function(e) {
+  if (e.target === this) closePopup();
+});
+</script>
+</body>
+</html>
