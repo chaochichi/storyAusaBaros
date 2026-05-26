@@ -130,6 +130,7 @@ let gameRunning = false;
 let keys = {};
 let score = 0, lives = 3, chestsOpened = 0;
 let demonSpawnTimer = 0, demonSpawnCount = 0;
+let worldOffset = 0;
 let popupOpen = false;
 let currentChestQ = null;
 
@@ -192,7 +193,7 @@ function loadImages() {
 function initGame() {
   const groundY = H * 0.78;
   player = {
-    x: W * 0.1, y: groundY, w: 80, h: 80,
+    x: W * 0.1, y: groundY - 10, w: 90, h: 90,
     vx: 0, vy: 0, onGround: true,
     frame: 0, row: 0, frameTimer: 0,
     state: 'idle', invincible: 0,
@@ -207,23 +208,24 @@ function initGame() {
   bgX = 0;
   demonSpawnTimer = 0;
   demonSpawnCount = 1;
+  worldOffset = 0;
 
-  // Place chests
-  const chestPositions = [0.2,0.28,0.38,0.48,0.58,0.68,0.78,0.88,1.1,1.3];
+  // Place chests spread far ahead in world space
   const shuffled = [...questions].sort(()=>Math.random()-.5);
-  chestPositions.forEach((pos, i) => {
+  for (let i = 0; i < 10; i++) {
     chests.push({
-      x: W * pos, y: groundY - 30, w: 50, h: 50,
-      opened: false, question: shuffled[i % shuffled.length],
+      worldX: W * 0.7 + i * W * 0.6, // far ahead, spread out
+      y: groundY - 30, w: 50, h: 50,
+      opened: false, question: shuffled[i],
       bobOffset: Math.random() * Math.PI * 2
     });
-  });
+  }
+  worldOffset = 0;
 
-  // Spawn first demon only, rest spawn over time
+  // Start with no demons, spawn gradually
   demons = [];
-  spawnDemon(W * 0.6);
-  demonSpawnTimer = 0;
-  demonSpawnCount = 1;
+  demonSpawnTimer = 300; // first demon after 5 sec
+  demonSpawnCount = 0;
 
   updateHUD();
 }
@@ -233,6 +235,7 @@ function spawnDemon(x) {
   demons.push({
     x, y: groundY, w: 72, h: 72,
     vx: -1.2, frame: 0, row: 1, frameTimer: 0,
+    w: 85, h: 85,
     hp: 2, state: 'walk', hitTimer: 0, facing: -1
   });
 }
@@ -287,7 +290,7 @@ function update() {
   const speed = 3.5;
 
   // BG scroll only when player moves right
-  if (keys['right']) { bgX -= 2.5; if (bgX <= -W) bgX += W; }
+  if (keys['right']) { bgX -= 2.5; if (bgX <= -W) bgX += W; worldOffset += 2.5; }
 
   // Player movement
   player.vx = 0;
@@ -326,13 +329,26 @@ function update() {
 
   // Animate player
   player.frameTimer++;
-  if (player.frameTimer >= 8) {
+  if (player.frameTimer >= 10) {
     player.frameTimer = 0;
-    if (player.slashTimer > 0) { player.row = 3; player.frame = (player.frame+1)%4; }
-    else if (player.powerTimer > 0) { player.row = 4; player.frame = (player.frame+1)%4; }
-    else if (!player.onGround) { player.row = 2; player.frame = (player.frame+1)%4; }
-    else if (player.vx !== 0) { player.row = 1; player.frame = (player.frame+1)%6; }
-    else { player.row = 0; player.frame = (player.frame+1)%4; }
+    if (player.slashTimer > 0) {
+      // ฟันดาบ → Row 3, 4 frames (0-3)
+      player.row = 3;
+      player.frame = (player.frame+1) % 4;
+    } else if (player.powerTimer > 0) {
+      // ปล่อยพลัง → Row 4, 3 frames (0-2)
+      player.row = 4;
+      player.frame = (player.frame+1) % 3;
+    } else if (player.vx !== 0) {
+      // เดิน → Row 0, frames 4-7 (index 3-6)
+      player.row = 0;
+      if (player.frame < 3) player.frame = 3;
+      player.frame = 3 + ((player.frame - 3 + 1) % 4);
+    } else {
+      // ยืน → Row 0, frame 0 only
+      player.row = 0;
+      player.frame = 0;
+    }
   }
 
   // Bullets
@@ -364,7 +380,7 @@ function update() {
     if (d.x < 0) { d.x = 0; d.vx = 1.5; }
     if (d.x > W - d.w) { d.x = W - d.w; d.vx = -1.5; }
     d.frameTimer++;
-    if (d.frameTimer >= 8) { d.frameTimer=0; d.frame=(d.frame+1)%4; }
+    if (d.frameTimer >= 10) { d.frameTimer=0; d.row=1; d.frame=(d.frame+1)%7; }
     if (d.hitTimer > 0) d.hitTimer--;
 
     // Bullet hit demon
@@ -454,9 +470,11 @@ function draw() {
   ctx.fillStyle = 'rgba(0,0,0,0.15)';
   ctx.fillRect(0, groundY + 80, W, H);
 
-  // Chests
+  // Chests - draw using world position
   chests.forEach(c => {
+    c.x = c.worldX - worldOffset;
     if (c.opened) return;
+    if (c.x < -c.w || c.x > W + c.w) return; // off screen
     const bob = Math.sin(frameCount * 0.05 + c.bobOffset) * 4;
     ctx.fillStyle = '#8b4513';
     ctx.beginPath();
@@ -576,7 +594,7 @@ function showEnd(win) {
     const c = document.createElement('canvas');
     c.width = 160; c.height = 160;
     const x = c.getContext('2d');
-    x.drawImage(imgs['usa_sprite'], 0, 0, FRAME_W, FRAME_H, 0, 0, 160, 160);
+    x.drawImage(imgs['usa_sprite'], 0, 0, FRAME_W, FRAME_H, 0, 0, 160, 160); // Row0 Frame0
     c.style.cssText = 'border-radius:50%;margin:10px auto;display:block;border:3px solid #ffd700';
     s.insertBefore(c, document.getElementById('endTitle'));
   }
