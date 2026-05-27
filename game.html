@@ -190,9 +190,9 @@ function loadImages() {
 }
 
 function initGame() {
-  const groundY = H * 0.80;
+  const groundY = H * 0.75;
   player = {
-    x: W * 0.1, y: groundY - 80, w: 110, h: 110,
+    x: W * 0.1, y: groundY - 120, w: 120, h: 150,
     vx: 0, vy: 0, onGround: true,
     frame: 0, row: 0, frameTimer: 0,
     state: 'idle', invincible: 0,
@@ -230,7 +230,7 @@ function initGame() {
 }
 
 function spawnDemon(x) {
-  const groundY = H * 0.80;
+  const groundY = H * 0.75;
   demons.push({
     x, y: groundY, w: 72, h: 72,
     vx: -1.2, frame: 0, row: 1, frameTimer: 0,
@@ -285,7 +285,7 @@ function gameLoop() {
 
 function update() {
   if (popupOpen) return;
-  const groundY = H * 0.80;
+  const groundY = H * 0.75;
   const speed = 3.5;
 
   // BG scroll only when player moves right
@@ -451,7 +451,7 @@ function draw() {
   }
 
   // Ground line
-  const groundY = H * 0.80;
+  const groundY = H * 0.75;
   ctx.fillStyle = 'rgba(0,0,0,0.15)';
   ctx.fillRect(0, groundY + 80, W, H);
 
