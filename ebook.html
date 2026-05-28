@@ -1,275 +1,321 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>e-Book อุสา บารส</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:'Sarabun',sans-serif;
-  background:#0a0a1a;
-  min-height:100vh;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:8px;
-  overflow:hidden;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หนังสือนิทานภาพ | อุสา-บารส</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #0d0a1a;
+            background-image:
+                radial-gradient(ellipse at top, #1e1040 0%, transparent 60%),
+                radial-gradient(ellipse at bottom, #1a0a0a 0%, transparent 60%),
+                radial-gradient(circle at center, #1a1030 0%, #080510 100%);
+            color: #fff;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-/* BOOK CONTAINER */
-#book-wrap{
-  width:100%;max-width:860px;
-  display:flex;flex-direction:column;
-  align-items:center;gap:10px;
-}
+        /* ===== HEADER IMAGE ===== */
+        .header-img-wrap {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+        .header-img-wrap img {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            box-shadow: 0 4px 24px rgba(200,150,12,0.25);
+        }
 
-/* PAGE DISPLAY */
-#page-container{
-  width:100%;
-  position:relative;
-  border-radius:8px;
-  overflow:hidden;
-  box-shadow:0 8px 40px rgba(0,0,0,0.8);
-  cursor:pointer;
-  background:#111;
-}
-#page-img{
-  width:100%;
-  display:block;
-  transition:opacity .3s ease;
-}
-#page-img.loading{opacity:0.3}
+        /* ===== NAVIGATION BAR ===== */
+        .nav-bar {
+            background: linear-gradient(135deg, rgba(42,21,5,0.7), rgba(92,51,23,0.5));
+            border: 1px solid rgba(200,150,12,0.3);
+            border-radius: 50px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(200,150,12,0.15);
+            padding: 8px 16px;
+        }
 
-/* SWIPE ZONES */
-.swipe-zone{
-  position:absolute;top:0;bottom:0;width:30%;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;transition:opacity .2s;
-  cursor:pointer;
-}
-.swipe-zone:hover{opacity:1}
-#zone-prev{left:0;background:linear-gradient(to right,rgba(0,0,0,0.4),transparent)}
-#zone-next{right:0;background:linear-gradient(to left,rgba(0,0,0,0.4),transparent)}
-.zone-arrow{
-  font-size:clamp(1.5rem,4vw,2.5rem);
-  color:rgba(255,255,255,0.9);
-  text-shadow:0 2px 8px rgba(0,0,0,0.8);
-}
+        .nav-btn {
+            background: rgba(200,150,12,0.15);
+            border: 1.5px solid rgba(200,150,12,0.4);
+            color: #f0d060;
+            border-radius: 50px;
+            padding: 8px 16px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Sarabun', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(200,150,12,0.35);
+            border-color: rgba(200,150,12,0.7);
+            transform: scale(1.05);
+            box-shadow: 0 4px 14px rgba(200,150,12,0.3);
+        }
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-/* PAGE NUMBER */
-#page-num{
-  position:absolute;bottom:8px;right:12px;
-  background:rgba(0,0,0,0.6);
-  color:#f0d060;font-size:.75rem;font-weight:600;
-  padding:3px 10px;border-radius:20px;
-  backdrop-filter:blur(4px);
-}
+        .page-indicator {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(200,150,12,0.25);
+            border-radius: 50px;
+            padding: 4px 16px;
+            color: rgba(240,208,96,0.8);
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+        }
 
-/* CONTROLS */
-.controls{
-  display:flex;align-items:center;gap:10px;
-  padding:4px 0;
-}
-.ctrl-btn{
-  width:40px;height:40px;border-radius:50%;
-  background:rgba(200,150,12,0.2);
-  border:1.5px solid rgba(200,150,12,0.5);
-  color:#f0d060;font-size:1.1rem;
-  cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;
-}
-.ctrl-btn:hover{background:rgba(200,150,12,0.4);transform:scale(1.1)}
-.ctrl-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+        .book-title-text {
+            color: #f0d060;
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: 0.04em;
+            text-shadow: 0 2px 8px rgba(200,150,12,0.5);
+        }
 
-/* PROGRESS BAR */
-.progress-wrap{
-  display:flex;align-items:center;gap:8px;
-}
-.progress-bar{
-  width:clamp(120px,40vw,240px);height:4px;
-  background:rgba(255,255,255,0.15);
-  border-radius:4px;overflow:hidden;
-  cursor:pointer;
-}
-.progress-fill{
-  height:100%;
-  background:linear-gradient(to right,#c8960c,#f0d060);
-  border-radius:4px;
-  transition:width .3s ease;
-}
-.page-label{
-  font-size:.8rem;color:rgba(240,208,96,0.8);
-  white-space:nowrap;min-width:60px;text-align:center;
-}
+        /* ===== BOOK CONTAINER ===== */
+        .book-container {
+            perspective: 2000px;
+            width: 100%;
+            max-width: 680px;
+            height: 72vh;
+            max-height: 820px;
+            position: relative;
+            margin: 0 auto;
+            /* Golden glow around book */
+            filter: drop-shadow(0 8px 32px rgba(200,150,12,0.2));
+        }
 
-/* THUMBNAIL STRIP */
-#thumb-wrap{
-  display:flex;gap:5px;
-  overflow-x:auto;
-  padding:4px 2px;
-  max-width:100%;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(200,150,12,0.4) transparent;
-}
-#thumb-wrap::-webkit-scrollbar{height:3px}
-#thumb-wrap::-webkit-scrollbar-thumb{background:rgba(200,150,12,0.4);border-radius:2px}
-.thumb{
-  flex-shrink:0;
-  width:clamp(48px,8vw,72px);
-  aspect-ratio:16/9;
-  object-fit:cover;
-  border-radius:3px;
-  cursor:pointer;
-  border:2px solid transparent;
-  transition:all .2s;opacity:0.6;
-}
-.thumb:hover{opacity:1;border-color:rgba(200,150,12,0.6)}
-.thumb.active{opacity:1;border-color:#f0d060;box-shadow:0 0 6px rgba(200,150,12,0.6)}
+        .page {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #1a1020;
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.7),
+                0 0 0 1px rgba(200,150,12,0.2),
+                inset 0 0 30px rgba(200,150,12,0.05);
+            transition: transform 0.65s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.65s ease-in-out;
+            transform-style: preserve-3d;
+            transform-origin: left center;
+            border-radius: 4px 16px 16px 4px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* TITLE */
-.book-title{
-  font-size:clamp(.8rem,2vw,1rem);
-  color:rgba(240,208,96,0.7);
-  letter-spacing:.05em;
-}
-</style>
+        /* สันหนังสือ */
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 0;
+            width: 32px;
+            background: linear-gradient(to right,
+                rgba(200,150,12,0.15) 0%,
+                rgba(0,0,0,0.4) 30%,
+                rgba(0,0,0,0) 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* กรอบทองขอบหน้าหนังสือ */
+        .page::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 4px 16px 16px 4px;
+            border: 1px solid rgba(200,150,12,0.15);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-color: #0d0a18;
+        }
+
+        .page-enter        { opacity: 0; transform: rotateY(90deg) scale(0.95); }
+        .page-enter-active { opacity: 1; transform: rotateY(0) scale(1); }
+        .page-exit         { opacity: 1; transform: rotateY(0) scale(1); }
+        .page-exit-active  { opacity: 0; transform: rotateY(-90deg) scale(0.95); }
+        .page-enter-reverse { opacity: 0; transform: rotateY(-90deg) scale(0.95); }
+        .page-exit-reverse  { opacity: 0; transform: rotateY(90deg) scale(0.95); }
+
+        /* ===== FOOTER ===== */
+        .footer-hint {
+            color: rgba(200,150,12,0.4);
+            font-size: 0.78rem;
+        }
+    </style>
 </head>
-<body>
+<body class="p-3 sm:p-5">
 
-<div id="book-wrap">
-  <div class="book-title">📖 เล่าตำนาน นิทานพื้นบ้านอีสาน : อุสา บารส</div>
-
-  <!-- Page Display -->
-  <div id="page-container">
-    <img id="page-img" src="" alt="หน้า e-Book" draggable="false">
-    <div class="swipe-zone" id="zone-prev" onclick="prevPage()">
-      <span class="zone-arrow">‹</span>
-    </div>
-    <div class="swipe-zone" id="zone-next" onclick="nextPage()">
-      <span class="zone-arrow">›</span>
-    </div>
-    <div id="page-num">1 / 19</div>
-  </div>
-
-  <!-- Controls -->
-  <div class="controls">
-    <button class="ctrl-btn" id="btn-first" onclick="goPage(0)" title="หน้าแรก">⏮</button>
-    <button class="ctrl-btn" id="btn-prev"  onclick="prevPage()" title="ก่อนหน้า">◀</button>
-
-    <div class="progress-wrap">
-      <div class="progress-bar" onclick="clickProgress(event)">
-        <div class="progress-fill" id="progress-fill" style="width:5.26%"></div>
-      </div>
-      <div class="page-label" id="page-label">1 / 19</div>
+    <!-- Header Image -->
+    <div class="header-img-wrap mb-3 flex-none">
+        <img src="https://chaochichi.github.io/storyAusaBaros/Header.png" alt="อุสา บารส">
     </div>
 
-    <button class="ctrl-btn" id="btn-next"  onclick="nextPage()" title="ถัดไป">▶</button>
-    <button class="ctrl-btn" id="btn-last"  onclick="goPage(18)" title="หน้าสุดท้าย">⏭</button>
-  </div>
+    <!-- Navigation Bar -->
+    <div class="flex-none w-full max-w-4xl mx-auto mb-3">
+        <div class="nav-bar flex justify-between items-center">
+            <button id="prevBtn" class="nav-btn" aria-label="หน้าก่อนหน้า">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span class="hidden sm:inline">ก่อนหน้า</span>
+            </button>
 
-  <!-- Thumbnails -->
-  <div id="thumb-wrap"></div>
-</div>
+            <div class="flex flex-col items-center gap-1">
+                <span class="book-title-text">📖 นิทานภาพ อุสา-บารส</span>
+                <div id="pageIndicator" class="page-indicator">หน้า 1 / 19</div>
+            </div>
 
-<script>
-const BASE = 'https://chaochichi.github.io/storyAusaBaros/';
-const TOTAL = 19;
-let current = 0;
+            <button id="nextBtn" class="nav-btn" aria-label="หน้าถัดไป">
+                <span class="hidden sm:inline">ถัดไป</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 
-// Build page URLs
-const pages = Array.from({length: TOTAL}, (_,i) => {
-  const n = String(i+1).padStart(2,'0');
-  return BASE + `ebook_${n}.jpg`;
-});
+    <!-- Book Viewer -->
+    <div class="flex-grow flex items-center justify-center w-full">
+        <div id="bookViewer" class="book-container"></div>
+    </div>
 
-// Preload next image
-function preload(idx) {
-  if(idx >= 0 && idx < TOTAL) {
-    const img = new Image();
-    img.src = pages[idx];
-  }
-}
+    <!-- Footer -->
+    <div class="flex-none text-center mt-3 mb-2 footer-hint">
+        <p>💡 ใช้ปุ่ม ⬅️ ➡️ บนคีย์บอร์ด หรือปัดหน้าจอซ้าย-ขวา เพื่อเปลี่ยนหน้า</p>
+    </div>
 
-// Render thumbnails
-function buildThumbs() {
-  const wrap = document.getElementById('thumb-wrap');
-  pages.forEach((src, i) => {
-    const img = document.createElement('img');
-    img.src = src;
-    img.className = 'thumb' + (i===0?' active':'');
-    img.id = `thumb-${i}`;
-    img.alt = `หน้า ${i+1}`;
-    img.onclick = () => goPage(i);
-    wrap.appendChild(img);
-  });
-}
+    <script>
+        const BASE = 'https://chaochichi.github.io/storyAusaBaros/';
 
-function goPage(idx) {
-  if(idx < 0 || idx >= TOTAL) return;
+        const images = [
+            "ebook_01.jpg","ebook_02.jpg","ebook_03.jpg","ebook_04.jpg",
+            "ebook_05.jpg","ebook_06.jpg","ebook_07.jpg","ebook_08.jpg",
+            "ebook_09.jpg","ebook_10.jpg","ebook_11.jpg","ebook_12.jpg",
+            "ebook_13.jpg","ebook_14.jpg","ebook_15.jpg","ebook_16.jpg",
+            "ebook_17.jpg","ebook_18.jpg","ebook_19.jpg"
+        ].map(f => BASE + f);
 
-  // Update active thumb
-  document.querySelector('.thumb.active')?.classList.remove('active');
-  document.getElementById(`thumb-${idx}`)?.classList.add('active');
+        let currentPageIndex = 0;
+        let isAnimating = false;
 
-  // Scroll thumb into view
-  document.getElementById(`thumb-${idx}`)?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+        const bookViewer   = document.getElementById('bookViewer');
+        const prevBtn      = document.getElementById('prevBtn');
+        const nextBtn      = document.getElementById('nextBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
 
-  // Update image
-  const img = document.getElementById('page-img');
-  img.classList.add('loading');
-  const newImg = new Image();
-  newImg.onload = () => {
-    img.src = newImg.src;
-    img.classList.remove('loading');
-  };
-  newImg.src = pages[idx];
+        function renderPage(index, direction = 'next') {
+            if (isAnimating) return;
+            isAnimating = true;
 
-  current = idx;
-  updateUI();
-  preload(idx + 1);
-  preload(idx - 1);
-}
+            const totalPages = images.length;
+            pageIndicator.textContent = `หน้า ${index + 1} / ${totalPages}`;
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalPages - 1;
 
-function nextPage() { goPage(current + 1); }
-function prevPage() { goPage(current - 1); }
+            const pageEl = document.createElement('div');
+            pageEl.className = 'page';
 
-function updateUI() {
-  const pct = ((current + 1) / TOTAL * 100).toFixed(2);
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('page-num').textContent   = `${current+1} / ${TOTAL}`;
-  document.getElementById('page-label').textContent = `${current+1} / ${TOTAL}`;
-  document.getElementById('btn-prev').disabled  = current === 0;
-  document.getElementById('btn-first').disabled = current === 0;
-  document.getElementById('btn-next').disabled  = current === TOTAL - 1;
-  document.getElementById('btn-last').disabled  = current === TOTAL - 1;
-}
+            if (bookViewer.children.length === 0) {
+                pageEl.classList.add('page-enter-active');
+            } else {
+                pageEl.classList.add(direction === 'next' ? 'page-enter' : 'page-enter-reverse');
+            }
 
-function clickProgress(e) {
-  const bar = e.currentTarget;
-  const pct = e.offsetX / bar.offsetWidth;
-  goPage(Math.floor(pct * TOTAL));
-}
+            pageEl.innerHTML = `
+                <img src="${images[index]}" alt="หน้า ${index + 1}"
+                     onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'100%\\' height=\\'100%\\'><rect width=\\'100%\\' height=\\'100%\\' fill=\\'%230d0a18\\'/><text x=\\'50%\\' y=\\'50%\\' font-family=\\'sans-serif\\' font-size=\\'18\\' text-anchor=\\'middle\\' fill=\\'%23c8960c\\'>ไม่พบรูปภาพ</text></svg>';"
+                     loading="lazy" draggable="false">
+            `;
 
-// Swipe support
-let touchX = 0;
-document.getElementById('page-container').addEventListener('touchstart', e => {
-  touchX = e.touches[0].clientX;
-}, {passive:true});
-document.getElementById('page-container').addEventListener('touchend', e => {
-  const diff = touchX - e.changedTouches[0].clientX;
-  if(Math.abs(diff) > 40) diff > 0 ? nextPage() : prevPage();
-}, {passive:true});
+            const currentPages = bookViewer.querySelectorAll('.page');
+            bookViewer.appendChild(pageEl);
 
-// Keyboard
-document.addEventListener('keydown', e => {
-  if(e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
-  if(e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
-});
+            if (currentPages.length > 0) {
+                const oldPage = currentPages[currentPages.length - 1];
+                void pageEl.offsetWidth;
 
-// Init
-buildThumbs();
-goPage(0);
-</script>
+                pageEl.classList.remove('page-enter', 'page-enter-reverse');
+                pageEl.classList.add('page-enter-active');
+                pageEl.style.transform = 'rotateY(0) scale(1)';
+                pageEl.style.opacity   = '1';
+
+                oldPage.style.transform = direction === 'next'
+                    ? 'rotateY(-90deg) scale(0.95)'
+                    : 'rotateY(90deg) scale(0.95)';
+                oldPage.style.opacity = '0';
+
+                setTimeout(() => {
+                    if (bookViewer.contains(oldPage)) bookViewer.removeChild(oldPage);
+                    isAnimating = false;
+                }, 650);
+            } else {
+                isAnimating = false;
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentPageIndex < images.length - 1 && !isAnimating) {
+                currentPageIndex++;
+                renderPage(currentPageIndex, 'next');
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentPageIndex > 0 && !isAnimating) {
+                currentPageIndex--;
+                renderPage(currentPageIndex, 'prev');
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') nextBtn.click();
+            else if (e.key === 'ArrowLeft') prevBtn.click();
+        });
+
+        let touchstartX = 0, touchendX = 0;
+        document.body.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+        document.body.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            const diff = touchstartX - touchendX;
+            if (Math.abs(diff) > 50) diff > 0 ? nextBtn.click() : prevBtn.click();
+        }, {passive: true});
+
+        // Preload all images
+        window.addEventListener('load', () => {
+            images.forEach(src => { const img = new Image(); img.src = src; });
+        });
+
+        renderPage(currentPageIndex);
+    </script>
 </body>
 </html>
