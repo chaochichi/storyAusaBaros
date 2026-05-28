@@ -52,7 +52,7 @@ body{
   display:flex;align-items:center;justify-content:center;font-size:15px;
 }
 .msg.bot .msg-av{background:transparent;overflow:hidden}
-.msg.user .msg-av{background:linear-gradient(135deg,#1565c0,#42a5f5)}
+.msg.user .msg-av{background:transparent;overflow:hidden}
 .msg-bubble{
   max-width:78%;padding:9px 13px;border-radius:16px;
   font-size:.88rem;line-height:1.55;
@@ -116,7 +116,7 @@ body{
 <div class="wrap">
 
   <div class="header">
-    <div class="header-avatar"><img src="https://chaochichi.github.io/storyAusaBaros/card_usa.png" style="width:100%;height:100%;object-fit:cover;" alt="น้องอุสา"></div>
+    <div class="header-avatar"><img src="https://chaochichi.github.io/storyAusaBaros/ausa_chat.png" style="width:100%;height:100%;object-fit:cover;" alt="น้องอุสา"></div>
     <div class="header-info">
       <h2>น้องอุสา ผู้ช่วยนิทาน</h2>
       <p><span class="dot"></span>ถามตอบเรื่อง อุสา บารส</p>
@@ -147,29 +147,44 @@ const API_URL='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.
 
 const SYSTEM=`คุณคือ "น้องอุสา" ผู้ช่วยสอนนิทานพื้นบ้านอีสาน เรื่อง "อุสา บารส"
 สำหรับนักเรียนชั้นประถมศึกษาปีที่ 3 โรงเรียนบ้านโคกม่วย สพป.หนองบัวลำภู เขต 1
-ครูผู้สร้างสื่อ: นางวิภาพร ธรรมวิเศษ
+ครูผู้สอน: นางวิภาพร ธรรมวิเศษ
 
-เนื้อเรื่องสำคัญ:
-- นางอุสา ธิดาของท้าวพญา อาศัยอยู่ที่หอนางอุสา บนภูพระบาท จังหวัดอุดรธานี
-- ท้าวบารส โอรสกษัตริย์ รูปงาม กล้าหาญ ซื่อสัตย์ เดินทางตามหานางอุสา
-- ทั้งสองพบกันและตกหลุมรัก แต่ท้าวกงพาน (พ่อของนางอุสา) ไม่ยินยอม
-- ท้าวกงพานท้าให้ท้าวบารสสร้างวัดให้เสร็จในคืนเดียว เพื่อทดสอบความรัก
-- ท้าวบารสสร้างเกือบสำเร็จ แต่ท้าวกงพานแกล้งให้ไก่ขันก่อนเวลา
-- ท้าวบารสแพ้ แต่ความรักและความซื่อสัตย์เป็นที่ประจักษ์
-- หอนางอุสาและซากวัดยังคงอยู่ที่ภูพระบาท เป็นหลักฐานประวัติศาสตร์
-- นิทานสอนเรื่อง ความรัก ความเสียสละ ความซื่อสัตย์ และคุณธรรม
+ตัวละครและเนื้อเรื่อง:
+- นางอุสา: ธิดาของท้าวพญา รูปงามมาก ใจดี อ่อนโยน อาศัยอยู่ที่หอนางอุสา บนภูพระบาท จังหวัดอุดรธานี
+- ท้าวบารส: โอรสกษัตริย์ รูปงาม กล้าหาญ ซื่อสัตย์ รักนางอุสาอย่างจริงใจ เดินทางไกลมาตามหา
+- ท้าวกงพาน: พ่อของนางอุสา เข้มแข็ง หวงลูก ท้าให้ท้าวบารสสร้างวัดให้เสร็จในคืนเดียว
+- ท้าวบารสสร้างเกือบสำเร็จ แต่ท้าวกงพานแกล้งให้ไก่ขันก่อนเวลา จึงแพ้
+- ความรักและความซื่อสัตย์ของท้าวบารสเป็นที่ประจักษ์แก่ทุกคน
+- หอนางอุสาและซากวัดยังคงอยู่ที่อุทยานประวัติศาสตร์ภูพระบาท จังหวัดอุดรธานี
+- นิทานสอนเรื่อง ความรัก ความเสียสละ ความซื่อสัตย์ ความอดทน และคุณธรรม
 
-กฎ:
-1. ตอบเฉพาะเรื่องนิทานอุสา บารส ประวัติศาสตร์ท้องถิ่น และคุณธรรมในนิทาน
-2. ถ้าถามนอกเรื่อง ให้บอกว่า "หนูตอบได้เฉพาะเรื่องนิทานอุสา บารส นะคะ 😊"
-3. ใช้ภาษาง่าย เหมาะเด็ก ป.3 ไม่ยาวเกิน
-4. ใช้ emoji เล็กน้อย เรียกตัวเองว่า "หนู" ลงท้าย "ค่ะ"`;
+สิ่งที่ตอบได้ (ครอบคลุมมาก):
+- เนื้อเรื่อง เหตุการณ์ ลำดับเรื่อง
+- ตัวละคร บุคลิก นิสัย ความรู้สึก ความสัมพันธ์
+- คำถามสร้างสรรค์เกี่ยวกับตัวละคร เช่น "นางอุสาสวยไหม" "ท้าวบารสดีไหม" "ใครน่าสงสารที่สุด" "ถ้าเป็นเราจะทำอะไร"
+- ความคิดเห็น วิเคราะห์ เปรียบเทียบตัวละคร
+- คุณธรรม บทเรียนชีวิต ข้อคิดจากนิทาน
+- สถานที่ ภูพระบาท หอนางอุสา อุดรธานี
+- ประวัติศาสตร์และวัฒนธรรมอีสานที่เกี่ยวข้อง
+
+สิ่งที่ตอบไม่ได้:
+- เรื่องที่ไม่เกี่ยวข้องกับนิทานหรือการเรียนรู้เลย เช่น การพนัน เนื้อหาไม่เหมาะเด็ก
+- ถ้าถามนอกเรื่องจริงๆ ให้บอกว่า "หนูเป็นผู้ช่วยเรื่องนิทานอุสา บารส ลองถามเรื่องนิทานดูนะคะ 😊"
+
+สไตล์การตอบ:
+- ภาษาง่าย สนุก เป็นกันเอง เหมาะเด็ก ป.3
+- กระชับ ไม่ยาวเกินไป
+- ใช้ emoji ประกอบเล็กน้อย
+- เรียกตัวเองว่า "หนู" ลงท้ายด้วย "ค่ะ"
+- ถ้าเด็กถามความคิดเห็น ให้ตอบในแง่บวก ชวนคิด ชวนเรียนรู้`
 
 function addMsg(role,text){
   const area=document.getElementById('chat-area');
   const div=document.createElement('div');
   div.className='msg '+role;
-  const av=role==='bot'?'<img src="https://chaochichi.github.io/storyAusaBaros/card_usa.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="น้องอุสา">':'👦';
+  const av=role==='bot'
+  ?'<img src="https://chaochichi.github.io/storyAusaBaros/ausa_chat.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="น้องอุสา">'
+  :'<img src="https://chaochichi.github.io/storyAusaBaros/baros_chat.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="บารส">';
   div.innerHTML=`<div class="msg-av">${av}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
   area.appendChild(div);area.scrollTop=area.scrollHeight;
 }
@@ -177,7 +192,7 @@ function addTyping(){
   const area=document.getElementById('chat-area');
   const div=document.createElement('div');
   div.className='msg bot';div.id='typing';
-  div.innerHTML=`<div class="msg-av"><img src="https://chaochichi.github.io/storyAusaBaros/card_usa.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="น้องอุสา"></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  div.innerHTML=`<div class="msg-av"><img src="https://chaochichi.github.io/storyAusaBaros/ausa_chat.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" alt="น้องอุสา"></div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   area.appendChild(div);area.scrollTop=area.scrollHeight;
 }
 function removeTyping(){const t=document.getElementById('typing');if(t)t.remove();}
