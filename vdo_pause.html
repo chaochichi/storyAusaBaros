@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>เบิ่ง VDO — อุสา บารส (ภาษาอีสาน)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Sarabun',sans-serif;
+  min-height:100vh;
+  background:url('https://chaochichi.github.io/storyAusaBaros/ChatGPT%20Image%2025%20%E0%B8%9E.%E0%B8%84.%202569%2015_29_18.png')
+    center center/cover no-repeat fixed;
+}
+.overlay{position:fixed;inset:0;background:linear-gradient(180deg,#e3f2fd99 0%,#e1f5fecc 100%);z-index:0}
+.container{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:16px 14px 40px;min-height:100vh}
+
+/* ─── Header image (เหมือน video_pause.html) ─── */
+.header{
+  margin-bottom:16px;border-radius:20px;overflow:hidden;
+  border:2px solid #0288d1;
+  box-shadow:0 4px 20px #0277bd33;
+}
+.header img{width:100%;display:block;}
+
+/* ─── Video card ─── */
+.video-card{
+  background:linear-gradient(135deg,#e3f2fdf0,#e1f5fef0);
+  border-radius:24px;border:2px solid #0288d1;
+  padding:14px;margin-bottom:16px;
+}
+.video-badge{
+  display:inline-block;
+  background:linear-gradient(90deg,#0277bd,#039be5);
+  color:#fff;font-size:12px;font-weight:800;
+  padding:4px 14px;border-radius:20px;letter-spacing:1px;margin-bottom:8px;
+}
+.video-title{
+  font-size:14px;font-weight:800;color:#0277bd;
+  margin-bottom:10px;text-align:center;
+}
+.video-wrap{
+  position:relative;width:100%;padding-top:56.25%;
+  border-radius:16px;overflow:hidden;background:#000;
+}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+
+/* ─── Progress dots ─── */
+.dots{display:flex;justify-content:center;gap:12px;margin:12px 0 0}
+.dot{
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;
+  border:2px solid #0288d1;color:#0288d1;background:#e3f2fd;
+  transition:.3s;
+}
+.dot.done{background:linear-gradient(135deg,#0277bd,#039be5);color:#fff;border-color:transparent;}
+.dot.current{background:#bbdefb;border-color:#0277bd;color:#0277bd;animation:pulse .9s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+
+/* ─── Info cards ─── */
+.info-card{
+  background:linear-gradient(135deg,#e3f2fdf0,#e1f5fef0);
+  border-radius:24px;border:2px solid #0288d1;
+  padding:16px 18px;margin-bottom:14px;
+}
+.info-card-title{
+  font-size:14px;font-weight:800;color:#0277bd;
+  margin-bottom:12px;display:flex;align-items:center;gap:7px;
+}
+.std-row{
+  display:flex;align-items:center;gap:8px;
+  background:#e3f2fd;border-radius:12px;
+  padding:8px 12px;margin-bottom:8px;
+  border:1.5px solid #81d4fa;
+}
+.std-badge{
+  background:linear-gradient(90deg,#0277bd,#039be5);
+  color:#fff;font-size:11px;font-weight:800;
+  padding:3px 10px;border-radius:10px;white-space:nowrap;
+}
+.std-txt{font-size:13px;font-weight:700;color:#01579b;}
+.std-desc{
+  font-size:13px;color:#01579b;line-height:1.7;
+  padding:8px 4px 4px;
+}
+.obj-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+.obj-item{
+  display:flex;align-items:flex-start;gap:10px;
+  background:#e3f2fd;border-radius:12px;
+  padding:9px 12px;border:1.5px solid #81d4fa;
+  font-size:13px;color:#01579b;line-height:1.6;
+}
+.obj-num{
+  background:linear-gradient(135deg,#0277bd,#039be5);
+  color:#fff;font-size:12px;font-weight:800;
+  min-width:24px;height:24px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:1px;
+}
+.watch-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+.watch-item{
+  display:flex;align-items:flex-start;gap:10px;
+  background:#e3f2fd;border-radius:12px;
+  padding:9px 12px;border:1.5px solid #81d4fa;
+  font-size:13px;color:#01579b;line-height:1.5;font-weight:600;
+}
+.watch-icon{font-size:18px;flex-shrink:0;}
+
+/* ─── Quiz Overlay ─── */
+.quiz-overlay{
+  display:none;position:fixed;inset:0;z-index:50;
+  background:rgba(0,0,0,0.6);
+  align-items:center;justify-content:center;padding:16px;
+}
+.quiz-overlay.show{display:flex;}
+.quiz-box{
+  background:linear-gradient(135deg,#e3f2fd,#e1f5fe);
+  border-radius:28px;border:3px solid #0288d1;
+  padding:22px 18px;max-width:440px;width:100%;
+  animation:popIn .35s ease;
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes popIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.quiz-num{
+  display:inline-block;
+  background:linear-gradient(90deg,#0277bd,#039be5);
+  color:#fff;font-size:11px;font-weight:800;
+  padding:3px 12px;border-radius:12px;margin-bottom:10px;
+}
+.quiz-q{font-size:16px;font-weight:800;color:#01579b;margin-bottom:14px;line-height:1.5;}
+.choices{display:flex;flex-direction:column;gap:9px;}
+.choice-btn{
+  padding:11px 14px;border-radius:14px;
+  border:2px solid #81d4fa;background:#e3f2fd;
+  font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;
+  color:#0277bd;cursor:pointer;text-align:left;transition:.2s;
+}
+.choice-btn:hover:not(:disabled){background:#bbdefb;border-color:#0277bd;}
+.choice-btn.correct{background:#e8f5e9;border-color:#4caf50;color:#2e7d32;}
+.choice-btn.wrong  {background:#ffebee;border-color:#f44336;color:#c62828;}
+.choice-btn:disabled{cursor:default;}
+.result-box{
+  display:none;margin-top:14px;padding:12px 14px;
+  border-radius:14px;border:2px solid #81d4fa;background:#e3f2fd;
+}
+.result-box.show{display:block;}
+.result-icon{font-size:28px;margin-bottom:6px;}
+.result-txt{font-size:14px;font-weight:700;color:#01579b;line-height:1.5;white-space:pre-line;}
+.continue-btn{
+  display:none;width:100%;margin-top:12px;
+  padding:13px;border:none;border-radius:16px;
+  background:linear-gradient(90deg,#0277bd,#039be5);
+  color:#fff;font-family:'Sarabun',sans-serif;
+  font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 4px 12px #0288d155;
+}
+.continue-btn.show{display:block;}
+
+/* ─── Complete box ─── */
+.complete-box{
+  background:linear-gradient(135deg,#e3f2fd,#e1f5fe);
+  border-radius:24px;border:2px solid #0288d1;
+  padding:20px;text-align:center;margin-top:16px;display:none;
+}
+.complete-box.show{display:block;animation:popIn .4s ease;}
+.complete-title{font-size:20px;font-weight:800;color:#0277bd;margin-bottom:8px;}
+.complete-msg{font-size:14px;font-weight:600;color:#01579b;line-height:1.7;margin-bottom:12px;}
+.score-wrap{background:#e3f2fd;border-radius:14px;padding:12px;border:1.5px solid #81d4fa;margin-bottom:10px;}
+.score-txt{font-size:16px;font-weight:800;color:#0277bd;margin-bottom:6px;}
+.score-bar-bg{height:12px;border-radius:8px;background:#bbdefb;overflow:hidden;}
+.score-bar-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,#0277bd,#039be5);width:0%;transition:width 1s ease;}
+</style>
+</head>
+<body>
+<div class="overlay"></div>
+<div class="container">
+
+  <!-- Header image (เหมือน video_pause.html) -->
+  <div class="header">
+    <img src="https://chaochichi.github.io/storyAusaBaros/Header.png" alt="อุสา บารส">
+  </div>
+
+  <!-- Video -->
+  <div class="video-card">
+    <div style="text-align:center;margin-bottom:8px;">
+      <span class="video-badge">📺 เบิ่ง VDO ภาษาอีสาน</span>
+    </div>
+    <div class="video-title">🎬 อุสา บารส — สำนวนภาษาอีสาน</div>
+    <div class="video-wrap">
+      <iframe id="ytPlayer"
+        src="https://www.youtube.com/embed/NZOCfXPIDr8?enablejsapi=1&rel=0&modestbranding=1&playsinline=1"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="dots">
+      <div class="dot" id="dot0">1</div>
+      <div class="dot" id="dot1">2</div>
+      <div class="dot" id="dot2">3</div>
+    </div>
+  </div>
+
+  <!-- มาตรฐานและตัวชี้วัด -->
+  <div class="info-card">
+    <div class="info-card-title">📚 มาตรฐานและตัวชี้วัด</div>
+    <div class="std-row">
+      <span class="std-badge">กลุ่มสาระ</span>
+      <span class="std-txt">สังคมศึกษา ศาสนาและวัฒนธรรม</span>
+    </div>
+    <div class="std-row">
+      <span class="std-badge">มาตรฐาน</span>
+      <span class="std-txt">ส 4.2</span>
+    </div>
+    <div class="std-row">
+      <span class="std-badge">ตัวชี้วัด</span>
+      <span class="std-txt">ป.3/2 และ ป.3/3</span>
+    </div>
+    <p class="std-desc">
+      <strong>สาระการเรียนรู้ท้องถิ่น</strong><br>
+      ศึกษาแหล่งท่องเที่ยวใกล้บ้านและแหล่งท่องเที่ยวที่มีชื่อเสียงในระดับจังหวัดและระดับประเทศ
+      โดยเน้นการอนุรักษ์และพัฒนาแหล่งท่องเที่ยว การประชาสัมพันธ์แหล่งท่องเที่ยว
+      รวมถึงโบราณสถานและแหล่งศิลปวัฒนธรรมในท้องถิ่น เพื่อให้ผู้เรียนเกิดความรัก
+      ความภาคภูมิใจ และร่วมอนุรักษ์มรดกทางวัฒนธรรมของชุมชน
+    </p>
+  </div>
+
+  <!-- จุดประสงค์ -->
+  <div class="info-card">
+    <div class="info-card-title">🎯 จุดประสงค์การเรียนรู้ที่คาดหวัง</div>
+    <ul class="obj-list">
+      <li class="obj-item"><span class="obj-num">1</span><span>ผู้เรียนมีความรู้ความเข้าใจในประวัติศาสตร์และเรื่องราวในท้องถิ่น</span></li>
+      <li class="obj-item"><span class="obj-num">2</span><span>ผู้เรียนมีความรักความภูมิใจในท้องถิ่น อนุรักษ์ พัฒนา สืบสานศิลปวัฒนธรรมและภูมิปัญญาท้องถิ่น</span></li>
+      <li class="obj-item"><span class="obj-num">3</span><span>ผู้เรียนมีทักษะการแก้ปัญหา และมีส่วนร่วมอย่างสร้างสรรค์ในการพัฒนาท้องถิ่น</span></li>
+      <li class="obj-item"><span class="obj-num">4</span><span>ผู้เรียนมีทักษะชีวิตและทักษะการทำงาน สามารถพัฒนาต่อยอดองค์ความรู้จากภูมิปัญญาท้องถิ่นสู่อาชีพได้</span></li>
+    </ul>
+  </div>
+
+  <!-- สิ่งที่ต้องสังเกต -->
+  <div class="info-card">
+    <div class="info-card-title">💡 เบิ่ง VDO แล้วสังเกตสิ่งเหล่านี้เด้อ</div>
+    <ul class="watch-list">
+      <li class="watch-item"><span class="watch-icon">👁️</span><span>แม่นางอุสาและท้าวบารสพบกันได้จั่งได๋?</span></li>
+      <li class="watch-item"><span class="watch-icon">🏰</span><span>หอนางอุสาอยู่ที่ใด?</span></li>
+      <li class="watch-item"><span class="watch-icon">💝</span><span>ตำนานนี้สอนคุณธรรมหยัง?</span></li>
+      <li class="watch-item"><span class="watch-icon">🗺️</span><span>สถานที่ในตำนานเชื่อมโยงกับจังหวัดใด?</span></li>
+    </ul>
+  </div>
+
+  <!-- Complete -->
+  <div class="complete-box" id="completeBox">
+    <div class="complete-title">🎉 เก่งหลายเด้อ!</div>
+    <p class="complete-msg" id="completeMsg"></p>
+    <div class="score-wrap">
+      <div class="score-txt" id="scoreTxt"></div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="scoreFill"></div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Quiz Overlay -->
+<div class="quiz-overlay" id="quizOverlay">
+  <div class="quiz-box">
+    <div class="quiz-num" id="quizNum">คำถ่ามที่ 1</div>
+    <div class="quiz-q"  id="quizQ"></div>
+    <div class="choices" id="choices"></div>
+    <div class="result-box" id="resultBox">
+      <div class="result-icon" id="resultIcon"></div>
+      <div class="result-txt"  id="resultTxt"></div>
+    </div>
+    <button class="continue-btn" id="continueBtn">▶ เบิ่ง VDO ต่อเทอ</button>
+  </div>
+</div>
+
+<script>
+const quizzes = [
+  {
+    pauseAt: 60,
+    num: 'คำถ่ามที่ 1',
+    q: 'ท้าวกงพานสร้างหยังให้แม่นางอุสาอยู่อาศัย?',
+    choices: ['วังเฮ็ดด้วยทอง','หออีหลีสูงใหญ่','ถ้ำในภู','เฮือนแพกลางน้ำ'],
+    ans: 1,
+    explain: 'แม่นแล้วเด้อ! ท้าวกงพานสร้างหออีหลีสูงใหญ่ให้แม่นางอุสาอยู่ เพื่อบ่ให้ใผมาพบเห็น'
+  },
+  {
+    pauseAt: 150,
+    num: 'คำถ่ามที่ 2',
+    q: 'ท้าวบารสฮู้จักแม่นางอุสาครั้งแรกได้จั่งได๋?',
+    choices: ['พบกันที่ตลาดนัด','ไปงานบุญด้วยกัน','เห็นกระทงที่แม่นางอุสาลอยมา','ปีนหอขึ้นไปพบ'],
+    ans: 2,
+    explain: 'แม่นแล้วเด้อ! ท้าวบารสเห็นกระทงสวยงามที่แม่นางอุสาลอยมา ซิ่นจั้งได้ฮักกัน'
+  },
+  {
+    pauseAt: 270,
+    num: 'คำถ่ามที่ 3',
+    q: 'ตำนานอุสา บารส สอนหยังเฮาได้บ้าง?',
+    choices: ['ความขยันหมั่นเพียร','ความฮักและความซื่อสัตย์','ความกล้าหาญ','ความประหยัด'],
+    ans: 1,
+    explain: 'แม่นแล้วเด้อ! ตำนานนี้สอนเรื่องความฮักและความซื่อสัตย์ เป็นคุณธรรมสำคัญของคนอีสาน'
+  }
+];
+
+let player=null, quizIdx=0, quizScore=0, triggered=new Set();
+
+window.onYouTubeIframeAPIReady = function() {
+  player = new YT.Player('ytPlayer', {
+    events: {
+      onReady: () => setInterval(checkTime, 800),
+      onStateChange: e => { if(e.data===YT.PlayerState.ENDED) showComplete(); }
+    }
+  });
+};
+
+function checkTime() {
+  if(!player||typeof player.getCurrentTime!=='function') return;
+  const t = Math.floor(player.getCurrentTime());
+  for(let i=0;i<quizzes.length;i++){
+    if(!triggered.has(i)&&t>=quizzes[i].pauseAt){
+      triggered.add(i); player.pauseVideo(); showQuiz(i); break;
+    }
+  }
+}
+
+function showQuiz(idx) {
+  quizIdx=idx;
+  const q=quizzes[idx];
+  document.getElementById('dot'+idx).className='dot current';
+  document.getElementById('quizNum').textContent=q.num;
+  document.getElementById('quizQ').textContent=q.q;
+  const el=document.getElementById('choices');
+  el.innerHTML='';
+  const L=['ก','ข','ค','ง'];
+  q.choices.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='choice-btn'; b.textContent=L[i]+'. '+c;
+    b.onclick=()=>answer(i); el.appendChild(b);
+  });
+  document.getElementById('resultBox').className='result-box';
+  document.getElementById('continueBtn').className='continue-btn';
+  document.getElementById('quizOverlay').className='quiz-overlay show';
+}
+
+function answer(chosen) {
+  const q=quizzes[quizIdx];
+  const btns=document.querySelectorAll('.choice-btn');
+  btns.forEach(b=>b.disabled=true);
+  const ok=chosen===q.ans;
+  if(ok){ quizScore++; btns[chosen].className='choice-btn correct';
+    document.getElementById('resultIcon').textContent='🎉';
+    document.getElementById('resultTxt').textContent='เจ้าตอบแม่นแล้วเด้อ!\n'+q.explain;
+  } else {
+    btns[chosen].className='choice-btn wrong';
+    btns[q.ans].className='choice-btn correct';
+    const L=['ก','ข','ค','ง'];
+    document.getElementById('resultIcon').textContent='😅';
+    document.getElementById('resultTxt').textContent='ยังบ่แม่นเด้อ — คำตอบที่ถืกคือ '+L[q.ans]+'\n'+q.explain;
+  }
+  document.getElementById('resultBox').className='result-box show';
+  const cb=document.getElementById('continueBtn');
+  cb.className='continue-btn show';
+  document.getElementById('dot'+quizIdx).className='dot done';
+  document.getElementById('dot'+quizIdx).textContent='✓';
+  if(quizIdx===quizzes.length-1){ cb.textContent='📊 เบิ่งผลคะแนน'; cb.onclick=showComplete; }
+  else { cb.textContent='▶ เบิ่ง VDO ต่อเทอ'; cb.onclick=continueVideo; }
+}
+
+function continueVideo() {
+  document.getElementById('quizOverlay').className='quiz-overlay';
+  player.playVideo();
+}
+
+function showComplete() {
+  document.getElementById('quizOverlay').className='quiz-overlay';
+  const pct=Math.round((quizScore/quizzes.length)*100);
+  let msg;
+  if(pct===100)    msg='เจ้าตอบถืกทุกข้อเลย! เก่งหลายเด้อ 🌟';
+  else if(pct>=60) msg='เฮ็ดได้ดีหลายเด้อ! ลองทบทวนข้อที่ผิดอีกหน่อยนะ 😊';
+  else             msg='บ่เป็นหยังเด้อ กลับไปเบิ่ง VDO อีกรอบแล้วซิฮู้มากขึ้น 💪';
+  for(let i=0;i<quizzes.length;i++){
+    document.getElementById('dot'+i).className='dot done';
+    document.getElementById('dot'+i).textContent='✓';
+  }
+  document.getElementById('completeMsg').innerHTML='เฮ็ด Pause Quiz ครบ '+quizzes.length+' ข้อแล้ว<br>'+msg;
+  document.getElementById('scoreTxt').textContent='คะแนน '+quizScore+'/'+quizzes.length+' ('+pct+'%)';
+  setTimeout(()=>{ document.getElementById('scoreFill').style.width=pct+'%'; },300);
+  const box=document.getElementById('completeBox');
+  box.className='complete-box show';
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+const tag=document.createElement('script');
+tag.src='https://www.youtube.com/iframe_api';
+document.head.appendChild(tag);
+</script>
+</body>
+</html>
