@@ -7,132 +7,139 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Charm:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-body {
+*{box-sizing:border-box;margin:0;padding:0}
+body{
   font-family:'Sarabun',sans-serif;
   background:linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 40%,#1a0a2e 100%);
   min-height:100vh;
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
   padding:16px;
 }
-#loading { text-align:center; color:#f0d060; }
-.spinner {
-  width:52px; height:52px;
+
+/* ─── LOADING ─── */
+#loading{text-align:center;color:#f0d060;}
+.spinner{
+  width:52px;height:52px;
   border:4px solid rgba(240,208,96,0.2);
-  border-top-color:#f0d060;
-  border-radius:50%;
-  animation:spin 1s linear infinite;
-  margin:0 auto 14px;
+  border-top-color:#f0d060;border-radius:50%;
+  animation:spin 1s linear infinite;margin:0 auto 14px;
 }
-@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes spin{to{transform:rotate(360deg)}}
 
-#error-box {
-  display:none;
-  background:rgba(255,255,255,0.08);
-  border:2px solid rgba(240,208,96,0.4);
-  border-radius:16px;
-  padding:32px 24px;
-  text-align:center; color:#f0d060;
-  max-width:360px;
+/* ─── ERROR ─── */
+#error-box{
+  display:none;background:rgba(255,255,255,0.08);
+  border:2px solid rgba(240,208,96,0.4);border-radius:16px;
+  padding:32px 24px;text-align:center;color:#f0d060;max-width:360px;
 }
-#error-box .icon { font-size:52px; margin-bottom:10px; }
-#error-box h2 { font-size:1.25rem; margin-bottom:8px; }
-#error-box p { font-size:.9rem; color:rgba(240,208,96,0.8); line-height:1.7; white-space:pre-line; }
+#error-box .icon{font-size:52px;margin-bottom:10px;}
+#error-box h2{font-size:1.25rem;margin-bottom:8px;}
+#error-box p{font-size:.9rem;color:rgba(240,208,96,0.8);line-height:1.7;white-space:pre-line;}
 
-#cert-wrapper {
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  gap:14px;
-  width:100%; max-width:560px;
+/* ─── WRAPPER ─── */
+#cert-wrapper{
+  display:none;flex-direction:column;align-items:center;
+  gap:14px;width:100%;max-width:560px;
   animation:fadeIn .7s ease;
 }
-@keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-#certificate {
-  position:relative;
-  width:100%;
-  aspect-ratio:16/9;
-  overflow:hidden;
-  border-radius:6px;
+/* ─── CERTIFICATE ─── */
+/* 16:9 ตรงกับ cert_bg.png จริง */
+#certificate{
+  position:relative;width:100%;aspect-ratio:16/9;
+  overflow:hidden;border-radius:6px;
   box-shadow:0 8px 40px rgba(0,0,0,.6);
 }
-#cert-bg-img {
-  position:absolute; inset:0;
-  width:100%; height:100%;
-  object-fit:fill; display:block;
+#cert-bg-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:fill;display:block;
 }
-.cert-overlay { position:absolute; inset:0; }
 
-/* 1. เกียรติบัตร */
-.cert-head {
+/* ─── OVERLAY ─── */
+.cert-overlay{position:absolute;inset:0;}
+
+/* ─── 1+2: เกียรติบัตร / มอบให้แก่ ─── */
+/* วิเคราะห์แล้ว: อยู่เหนือกรอบ 1 (top 16%) */
+.cert-head{
   position:absolute;
-  top:2.5%; left:0; right:0;
-  text-align:center;
-  line-height:1.2;
+  top:2%;left:0;right:0;
+  text-align:center;line-height:1.2;
 }
-.cert-title {
+.cert-title{
   font-family:'Charm',serif;
-  font-size:clamp(.9rem,3.2vw,1.5rem);
-  font-weight:700; color:#6b1212;
-  display:block;
+  font-size:clamp(.85rem,3vw,1.45rem);
+  font-weight:700;color:#6b1212;display:block;
 }
-/* 2. มอบให้แก่ */
-.cert-sub {
-  font-size:clamp(.52rem,1.7vw,.72rem);
-  font-weight:600; color:#4a2800;
-  display:block; margin-top:.15em;
+.cert-sub{
+  font-size:clamp(.5rem,1.6vw,.68rem);
+  font-weight:600;color:#4a2800;display:block;margin-top:.1em;
 }
 
-/* 3. ชื่อ-นามสกุล */
-.cert-name-wrap {
+/* ─── 3: ชื่อนักเรียน → กรอบ 1 (y=14.7–29.4%, กลาง=21.8%) ─── */
+.cert-name-wrap{
   position:absolute;
-  top:20%; left:0; right:0;
+  top:14.7%;left:15%;right:15%;
+  height:14.7%;
+  display:flex;align-items:center;justify-content:center;
   text-align:center;
 }
-.cert-name {
+.cert-name{
   font-family:'Charm',serif;
-  font-size:clamp(.85rem,2.9vw,1.35rem);
-  font-weight:700; color:#6b1212;
-  line-height:1.1; display:block;
+  font-size:clamp(.85rem,2.8vw,1.3rem);
+  font-weight:700;color:#6b1212;line-height:1.1;
 }
 
-/* 4. ผ่านการเรียนรู้... */
-.cert-body-wrap {
+/* ─── 4: เนื้อหา → กรอบ 2 (y=37.7–61.9%, กลาง=49.6%) ─── */
+.cert-body-wrap{
   position:absolute;
-  top:34%; left:16%; right:16%;
+  top:37.7%;left:16%;right:16%;
+  height:24.2%;
+  display:flex;align-items:center;justify-content:center;
   text-align:center;
-  line-height:1.5;
-  font-size:clamp(.48rem,1.6vw,.66rem);
+  line-height:1.55;
+  font-size:clamp(.45rem,1.5vw,.62rem);
   color:#3a1800;
+  flex-direction:column;
 }
 
-/* 5. ตราสำนักงานเขต — อยู่กลางล่าง */
-.cert-seal-wrap {
+/* ─── 5: ผ่าน X% → กรอบ 3 (y=67.1–74.6%, กลาง=71%) ─── */
+.cert-score-wrap{
   position:absolute;
-  bottom:5%; left:50%;
-  transform:translateX(-50%);
-  display:flex; align-items:center; justify-content:center;
+  top:67.1%;left:20%;right:20%;
+  height:7.5%;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
 }
-.seal-img {
-  width:clamp(34px,8.5%,52px);
-  height:auto;
-  mix-blend-mode:multiply;
-  display:block;
+.cert-score{
+  font-family:'Charm',serif;
+  font-size:clamp(.7rem,2.2vw,1rem);
+  font-weight:700;color:#6b1212;
 }
 
-/* ปุ่ม */
-.btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%; }
-.btn {
-  padding:9px 22px; border:none; border-radius:50px;
-  cursor:pointer; font-family:'Sarabun',sans-serif;
-  font-size:.92rem; font-weight:600;
+/* ─── 6: ตราสำนักงานเขต → กลางล่าง ─── */
+.cert-seal-wrap{
+  position:absolute;
+  bottom:4%;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;justify-content:center;
+}
+.seal-img{
+  width:clamp(32px,8%,50px);height:auto;
+  mix-blend-mode:multiply;display:block;
+}
+
+/* ─── BUTTONS ─── */
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;width:100%;}
+.btn{
+  padding:9px 22px;border:none;border-radius:50px;
+  cursor:pointer;font-family:'Sarabun',sans-serif;
+  font-size:.92rem;font-weight:600;
   transition:transform .15s,opacity .15s;
 }
-.btn:active { transform:scale(.97); }
-.btn:disabled { opacity:.6; cursor:default; }
-.btn-dl { background:linear-gradient(135deg,#c8960c,#f0d060,#c8960c); color:#3a1800; }
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.6;cursor:default;}
+.btn-dl{background:linear-gradient(135deg,#c8960c,#f0d060,#c8960c);color:#3a1800;}
 </style>
 </head>
 <body>
@@ -151,42 +158,49 @@ body {
 <div id="cert-wrapper">
   <div id="certificate">
 
+    <!-- พื้นหลัง -->
     <img id="cert-bg-img"
          src="https://chaochichi.github.io/storyAusaBaros/cert_bg.png"
          alt="" crossorigin="anonymous">
 
     <div class="cert-overlay">
 
-      <!-- 1+2: เกียรติบัตร / มอบให้แก่ -->
+      <!-- 1+2: เกียรติบัตร / มอบให้แก่ (เหนือกรอบ 1) -->
       <div class="cert-head">
         <span class="cert-title">เกียรติบัตร</span>
         <span class="cert-sub">มอบให้แก่</span>
       </div>
 
-      <!-- 3: ชื่อ-นามสกุล -->
+      <!-- 3: ชื่อนักเรียน (กรอบ 1) -->
       <div class="cert-name-wrap">
         <span class="cert-name" id="cert-student-name">—</span>
       </div>
 
-      <!-- 4: ผ่านการเรียนรู้... -->
+      <!-- 4: เนื้อหา (กรอบ 2) -->
       <div class="cert-body-wrap">
         <p>ผ่านการเรียนรู้สื่อดิจิทัลนวัตกรรมการศึกษา</p>
         <p>นิทานพื้นบ้านอุสา บารส</p>
       </div>
 
-      <!-- 5: ตราสำนักงานเขต (ลบพื้นดำด้วย mix-blend-mode) -->
+      <!-- 5: คะแนน ผ่าน X% (กรอบ 3 — ช่องว่างที่ 3) -->
+      <div class="cert-score-wrap">
+        <span class="cert-score" id="cert-score-text">—</span>
+      </div>
+
+      <!-- 6: ตราสำนักงานเขต -->
       <div class="cert-seal-wrap">
-        <img class="seal-img"
-             id="cert-seal"
+        <img class="seal-img" id="cert-seal"
              src="https://chaochichi.github.io/storyAusaBaros/school_seal.png"
-             alt="ตราสำนักงานเขต" crossorigin="anonymous">
+             alt="ตรา" crossorigin="anonymous">
       </div>
 
     </div>
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-dl" id="btn-dl" onclick="downloadCert()">📥 บันทึกเกียรติบัตร</button>
+    <button class="btn btn-dl" id="btn-dl" onclick="downloadCert()">
+      📥 บันทึกเกียรติบัตร
+    </button>
   </div>
 </div>
 
@@ -207,11 +221,13 @@ function showError(icon, title, msg) {
   document.getElementById('err-msg').textContent   = msg;
 }
 
-function showCert(name) {
+function showCert(name, postScore) {
   document.getElementById('loading').style.display     = 'none';
   document.getElementById('error-box').style.display   = 'none';
+  const pct = Math.round((postScore / MAX_SCORE) * 100);
   document.getElementById('cert-student-name').textContent = name;
-  document.getElementById('cert-wrapper').style.display = 'flex';
+  document.getElementById('cert-score-text').textContent   = 'ผ่าน ' + pct + '%';
+  document.getElementById('cert-wrapper').style.display    = 'flex';
 }
 
 async function loadData() {
@@ -232,12 +248,13 @@ async function loadData() {
       showError('📚','ยังไม่ผ่านการทดสอบ','คุณยังไม่ผ่านการทดสอบบทเรียนนี้');
       return;
     }
-    showCert(data.name);
+    showCert(data.name, postScore);
   } catch(err) {
     showError('⚠️','โหลดข้อมูลไม่ได้','กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่นะคะ');
   }
 }
 
+/* ─── DOWNLOAD ─── */
 async function fetchBase64(url) {
   return new Promise(resolve => {
     const img = new Image();
