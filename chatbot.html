@@ -173,11 +173,8 @@ async function sendMsg(){
   addMsg('user',text);
   addTyping();
   try{
-    const res=await fetch(SCRIPT_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'chat',question:text})
-    });
+    const url=SCRIPT_URL+'?action=chat&question='+encodeURIComponent(text);
+    const res=await fetch(url);
     const data=await res.json();
     const reply=data?.answer||'ขอโทษนะคะ หนูไม่เข้าใจค่ะ';
     removeTyping();addMsg('bot',reply);
