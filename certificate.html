@@ -7,20 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Charm:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+* { box-sizing:border-box; margin:0; padding:0; }
 body {
-  font-family: 'Sarabun', sans-serif;
-  background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 40%, #1a0a2e 100%);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
+  font-family:'Sarabun',sans-serif;
+  background:linear-gradient(135deg,#1a0a2e 0%,#2d1b4e 40%,#1a0a2e 100%);
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:16px;
 }
-
-/* ─── LOADING ─── */
 #loading { text-align:center; color:#f0d060; }
 .spinner {
   width:52px; height:52px;
@@ -32,35 +27,29 @@ body {
 }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* ─── ERROR ─── */
 #error-box {
   display:none;
   background:rgba(255,255,255,0.08);
   border:2px solid rgba(240,208,96,0.4);
   border-radius:16px;
   padding:32px 24px;
-  text-align:center;
-  color:#f0d060;
+  text-align:center; color:#f0d060;
   max-width:360px;
 }
 #error-box .icon { font-size:52px; margin-bottom:10px; }
 #error-box h2 { font-size:1.25rem; margin-bottom:8px; }
-#error-box p { font-size:0.9rem; color:rgba(240,208,96,0.8); line-height:1.7; white-space:pre-line; }
+#error-box p { font-size:.9rem; color:rgba(240,208,96,0.8); line-height:1.7; white-space:pre-line; }
 
-/* ─── WRAPPER ─── */
 #cert-wrapper {
   display:none;
   flex-direction:column;
   align-items:center;
   gap:14px;
-  width:100%;
-  max-width:560px;
+  width:100%; max-width:560px;
   animation:fadeIn .7s ease;
 }
 @keyframes fadeIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
-/* ─── CERTIFICATE CONTAINER ─── */
-/* ใช้ 16/9 ให้ตรงกับ cert_bg.png จริง */
 #certificate {
   position:relative;
   width:100%;
@@ -69,140 +58,81 @@ body {
   border-radius:6px;
   box-shadow:0 8px 40px rgba(0,0,0,.6);
 }
-
 #cert-bg-img {
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:fill;
-  display:block;
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:fill; display:block;
 }
+.cert-overlay { position:absolute; inset:0; }
 
-/* ─── ชั้นข้อความทั้งหมด ─── */
-.cert-overlay {
-  position:absolute;
-  inset:0;
-}
-
-/* ── หัวเรื่อง: "เกียรติบัตร" + "มอบให้แก่" ── */
-/* FIX 1: ลด top ให้ชิดขึ้น — จาก 9% → 2.5% */
+/* 1. เกียรติบัตร */
 .cert-head {
   position:absolute;
-  top:2.5%;
-  left:0; right:0;
+  top:2.5%; left:0; right:0;
   text-align:center;
-  line-height:1.15;
+  line-height:1.2;
 }
 .cert-title {
   font-family:'Charm',serif;
   font-size:clamp(.9rem,3.2vw,1.5rem);
-  font-weight:700;
-  color:#6b1212;
+  font-weight:700; color:#6b1212;
   display:block;
 }
+/* 2. มอบให้แก่ */
 .cert-sub {
   font-size:clamp(.52rem,1.7vw,.72rem);
-  font-weight:600;
-  color:#4a2800;
-  display:block;
-  margin-top:.1em;
+  font-weight:600; color:#4a2800;
+  display:block; margin-top:.15em;
 }
 
-/* ── ชื่อนักเรียน ── */
-/* FIX 2: ลด gap → top ลดจาก 30% → 18% */
+/* 3. ชื่อ-นามสกุล */
 .cert-name-wrap {
   position:absolute;
-  top:18%;
-  left:0; right:0;
+  top:20%; left:0; right:0;
   text-align:center;
 }
 .cert-name {
   font-family:'Charm',serif;
   font-size:clamp(.85rem,2.9vw,1.35rem);
-  font-weight:700;
-  color:#6b1212;
-  line-height:1.1;
-  display:block;
+  font-weight:700; color:#6b1212;
+  line-height:1.1; display:block;
 }
 
-/* ── เนื้อหา ── */
-/* FIX 2 ต่อ: ลด gap → top ลดจาก 38% → 28% */
+/* 4. ผ่านการเรียนรู้... */
 .cert-body-wrap {
   position:absolute;
-  top:28%;
-  left:16%; right:16%;
+  top:34%; left:16%; right:16%;
   text-align:center;
-  line-height:1.45;
-  font-size:clamp(.46rem,1.55vw,.64rem);
-  color:#3a1800;
-}
-.cert-body-wrap p { margin:0; }
-.cert-body-wrap .score {
-  font-weight:700;
-  color:#6b1212;
-  display:block;
-  margin-top:.4em;
-}
-
-/* ── แถวล่าง: วันที่ | ตรา | โรงเรียน ── */
-.cert-bottom {
-  position:absolute;
-  bottom:4%;
-  left:10%; right:10%;
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-}
-
-.cert-info {
-  text-align:center;
-  font-size:clamp(.38rem,1.25vw,.52rem);
-  color:#3a1800;
   line-height:1.5;
+  font-size:clamp(.48rem,1.6vw,.66rem);
+  color:#3a1800;
 }
 
-/* FIX 3: ลบพื้นดำออกจากตราด้วย mix-blend-mode: multiply */
-/* multiply บน background สีครีม/ทอง จะทำให้สีดำหายไป */
+/* 5. ตราสำนักงานเขต — อยู่กลางล่าง */
 .cert-seal-wrap {
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:2px;
+  position:absolute;
+  bottom:5%; left:50%;
+  transform:translateX(-50%);
+  display:flex; align-items:center; justify-content:center;
 }
 .seal-img {
-  width:clamp(32px,8%,50px);
+  width:clamp(34px,8.5%,52px);
   height:auto;
-  /* FIX 3: mix-blend-mode: multiply ลบพื้นดำ */
   mix-blend-mode:multiply;
   display:block;
 }
 
-/* ─── BUTTONS ─── */
-.btn-row {
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  flex-wrap:wrap;
-  width:100%;
-}
+/* ปุ่ม */
+.btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; width:100%; }
 .btn {
-  padding:9px 22px;
-  border:none;
-  border-radius:50px;
-  cursor:pointer;
-  font-family:'Sarabun',sans-serif;
-  font-size:.92rem;
-  font-weight:600;
+  padding:9px 22px; border:none; border-radius:50px;
+  cursor:pointer; font-family:'Sarabun',sans-serif;
+  font-size:.92rem; font-weight:600;
   transition:transform .15s,opacity .15s;
 }
 .btn:active { transform:scale(.97); }
 .btn:disabled { opacity:.6; cursor:default; }
-.btn-dl {
-  background:linear-gradient(135deg,#c8960c,#f0d060,#c8960c);
-  color:#3a1800;
-}
+.btn-dl { background:linear-gradient(135deg,#c8960c,#f0d060,#c8960c); color:#3a1800; }
 </style>
 </head>
 <body>
@@ -221,71 +151,50 @@ body {
 <div id="cert-wrapper">
   <div id="certificate">
 
-    <!-- พื้นหลัง -->
     <img id="cert-bg-img"
          src="https://chaochichi.github.io/storyAusaBaros/cert_bg.png"
          alt="" crossorigin="anonymous">
 
     <div class="cert-overlay">
 
-      <!-- หัวเรื่อง (ชิดขึ้น: top 2.5%) -->
+      <!-- 1+2: เกียรติบัตร / มอบให้แก่ -->
       <div class="cert-head">
         <span class="cert-title">เกียรติบัตร</span>
         <span class="cert-sub">มอบให้แก่</span>
       </div>
 
-      <!-- ชื่อนักเรียน (ชิดขึ้น: top 18%) -->
+      <!-- 3: ชื่อ-นามสกุล -->
       <div class="cert-name-wrap">
         <span class="cert-name" id="cert-student-name">—</span>
       </div>
 
-      <!-- เนื้อหา (ชิดขึ้น: top 28%) -->
+      <!-- 4: ผ่านการเรียนรู้... -->
       <div class="cert-body-wrap">
         <p>ผ่านการเรียนรู้สื่อดิจิทัลนวัตกรรมการศึกษา</p>
         <p>นิทานพื้นบ้านอุสา บารส</p>
-        <p>และผ่านการประเมินทุกตอนตามเกณฑ์ที่กำหนด</p>
-        <span class="score" id="cert-score-line"></span>
       </div>
 
-      <!-- แถวล่าง -->
-      <div class="cert-bottom">
-        <div class="cert-info">
-          <div id="cert-date-val">—</div>
-          <div>ครูผู้สอน</div>
-          <div>นางวิภาพร ธรรมวิเศษ</div>
-        </div>
-
-        <!-- ตราสถานศึกษา (ลบพื้นดำด้วย mix-blend-mode: multiply) -->
-        <div class="cert-seal-wrap">
-          <img class="seal-img"
-               id="cert-seal"
-               src="https://chaochichi.github.io/storyAusaBaros/school_seal.png"
-               alt="ตรา" crossorigin="anonymous">
-        </div>
-
-        <div class="cert-info">
-          <div>โรงเรียนบ้านโคกม่วย</div>
-          <div>สพป.หนองบัวลำภู เขต 1</div>
-        </div>
+      <!-- 5: ตราสำนักงานเขต (ลบพื้นดำด้วย mix-blend-mode) -->
+      <div class="cert-seal-wrap">
+        <img class="seal-img"
+             id="cert-seal"
+             src="https://chaochichi.github.io/storyAusaBaros/school_seal.png"
+             alt="ตราสำนักงานเขต" crossorigin="anonymous">
       </div>
 
     </div>
   </div>
 
   <div class="btn-row">
-    <button class="btn btn-dl" id="btn-dl" onclick="downloadCert()">
-      📥 บันทึกเกียรติบัตร
-    </button>
+    <button class="btn btn-dl" id="btn-dl" onclick="downloadCert()">📥 บันทึกเกียรติบัตร</button>
   </div>
 </div>
 
 <script>
-// ========== CONFIG ==========
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSO-Lqb3L3mjc0FjxWQerRGZVRUsBPBj6m2MxR23wJsYq4dCFxaJ4Ij0GR2fcT4WmH/exec';
 const PASS_SCORE = 12;
 const MAX_SCORE  = 15;
 
-// ========== INIT ==========
 const params      = new URLSearchParams(window.location.search);
 const studentName = params.get('name') || '';
 
@@ -298,27 +207,13 @@ function showError(icon, title, msg) {
   document.getElementById('err-msg').textContent   = msg;
 }
 
-function showCert(name, postScore, dateStr) {
+function showCert(name) {
   document.getElementById('loading').style.display     = 'none';
   document.getElementById('error-box').style.display   = 'none';
-
-  const pct = Math.round((postScore / MAX_SCORE) * 100);
   document.getElementById('cert-student-name').textContent = name;
-  document.getElementById('cert-score-line').textContent =
-    'คะแนน ' + postScore + ' จาก ' + MAX_SCORE + ' คะแนน (' + pct + '%)';
-
-  let disp = dateStr || '';
-  try {
-    const d = new Date(dateStr);
-    if (!isNaN(d)) disp = d.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
-  } catch(e) {}
-  if (!disp) disp = new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'});
-  document.getElementById('cert-date-val').textContent = disp;
-
   document.getElementById('cert-wrapper').style.display = 'flex';
 }
 
-// ========== LOAD ==========
 async function loadData() {
   if (!studentName) {
     showError('❓','ไม่พบชื่อ','กรุณากลับไปป้อนชื่อก่อนนะคะ');
@@ -334,19 +229,14 @@ async function loadData() {
     }
     const postScore = parseInt(data.post) || 0;
     if (postScore < PASS_SCORE) {
-      showError('📚','ยังไม่ผ่านการทดสอบ',
-        'คุณยังไม่ผ่านการทดสอบบทเรียนนี้');
+      showError('📚','ยังไม่ผ่านการทดสอบ','คุณยังไม่ผ่านการทดสอบบทเรียนนี้');
       return;
     }
-    showCert(data.name, postScore, data.date || '');
+    showCert(data.name);
   } catch(err) {
-    showError('⚠️','โหลดข้อมูลไม่ได้',
-      'กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่นะคะ');
+    showError('⚠️','โหลดข้อมูลไม่ได้','กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่นะคะ');
   }
 }
-
-// ========== DOWNLOAD ==========
-// FIX 4: แปลง url → base64, และลบพื้นดำจากตราด้วย canvas ก่อน capture
 
 async function fetchBase64(url) {
   return new Promise(resolve => {
@@ -357,15 +247,13 @@ async function fetchBase64(url) {
       c.width  = img.naturalWidth  || 400;
       c.height = img.naturalHeight || 400;
       c.getContext('2d').drawImage(img, 0, 0);
-      try { resolve(c.toDataURL('image/png')); }
-      catch(e) { resolve(null); }
+      try { resolve(c.toDataURL('image/png')); } catch(e) { resolve(null); }
     };
     img.onerror = () => resolve(null);
-    img.src = url + (url.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
+    img.src = url + '?nc=' + Date.now();
   });
 }
 
-// ลบพื้นดำจากรูปตรา: pixel ที่ R<50 G<50 B<50 → transparent
 async function sealRemoveBlack(url) {
   return new Promise(resolve => {
     const img = new Image();
@@ -377,21 +265,16 @@ async function sealRemoveBlack(url) {
       const ctx = c.getContext('2d');
       ctx.drawImage(img, 0, 0);
       try {
-        const d    = ctx.getImageData(0, 0, c.width, c.height);
-        const data = d.data;
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i], g = data[i+1], b = data[i+2];
-          // ลบพิกเซลสีดำ/เกือบดำ
-          if (r < 60 && g < 60 && b < 60) {
-            data[i+3] = 0;   // transparent
-          }
+        const d = ctx.getImageData(0, 0, c.width, c.height);
+        for (let i = 0; i < d.data.length; i += 4) {
+          if (d.data[i] < 60 && d.data[i+1] < 60 && d.data[i+2] < 60) d.data[i+3] = 0;
         }
         ctx.putImageData(d, 0, 0);
         resolve(c.toDataURL('image/png'));
       } catch(e) { resolve(null); }
     };
     img.onerror = () => resolve(null);
-    img.src = url + (url.includes('?') ? '&' : '?') + 'nocache=' + Date.now();
+    img.src = url + '?nc=' + Date.now();
   });
 }
 
@@ -399,51 +282,30 @@ async function downloadCert() {
   const btn = document.getElementById('btn-dl');
   btn.textContent = '⏳ กำลังสร้างรูป...';
   btn.disabled = true;
-
   try {
     const bgEl   = document.getElementById('cert-bg-img');
     const sealEl = document.getElementById('cert-seal');
-
-    // แปลงรูปทั้งสองเป็น base64 (และลบพื้นดำจากตรา)
     const [bgB64, sealB64] = await Promise.all([
       fetchBase64(bgEl.src),
       sealRemoveBlack(sealEl.src)
     ]);
-
-    const origBg   = bgEl.src;
-    const origSeal = sealEl.src;
-
+    const origBg = bgEl.src, origSeal = sealEl.src;
     if (bgB64)   bgEl.src   = bgB64;
     if (sealB64) sealEl.src = sealB64;
-
-    // ปิด mix-blend-mode ชั่วคราว (html2canvas ไม่รองรับ)
     sealEl.style.mixBlendMode = 'normal';
-
     await new Promise(r => setTimeout(r, 250));
-
     const canvas = await html2canvas(document.getElementById('certificate'), {
-      scale: 3,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: null,
-      logging: false
+      scale:3, useCORS:true, allowTaint:true, backgroundColor:null, logging:false
     });
-
-    // คืนค่าเดิม
-    bgEl.src   = origBg;
-    sealEl.src = origSeal;
+    bgEl.src = origBg; sealEl.src = origSeal;
     sealEl.style.mixBlendMode = 'multiply';
-
     const link = document.createElement('a');
     link.download = 'เกียรติบัตร_' + (studentName || 'cert') + '.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
-
   } catch(e) {
-    console.error(e);
     alert('ไม่สามารถบันทึกได้\nลองกดค้างที่รูปแล้วเลือก "บันทึกรูปภาพ" แทนนะคะ');
   }
-
   btn.innerHTML = '📥 บันทึกเกียรติบัตร';
   btn.disabled  = false;
 }
