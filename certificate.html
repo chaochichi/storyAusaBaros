@@ -60,11 +60,13 @@ body{
 /* ─── OVERLAY ─── */
 .cert-overlay{position:absolute;inset:0;}
 
-/* ─── 1+2: เกียรติบัตร / มอบให้แก่ ─── */
-/* วิเคราะห์แล้ว: อยู่เหนือกรอบ 1 (top 16%) */
+/* ─── กรอบ 1 (y=14.7–29.4%): เกียรติบัตร + มอบให้แก่ ─── */
 .cert-head{
   position:absolute;
-  top:24.7%;left:0;right:0;
+  top:14.7%;left:15%;right:15%;
+  height:14.7%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
   text-align:center;line-height:1.2;
 }
 .cert-title{
@@ -77,33 +79,30 @@ body{
   font-weight:600;color:#4a2800;display:block;margin-top:.1em;
 }
 
-/* ─── 3: ชื่อนักเรียน → กรอบ 1 (y=14.7–29.4%, กลาง=21.8%) ─── */
+/* ─── กรอบ 2 (y=37.7–61.9%): ชื่อนักเรียน + เนื้อหา ─── */
 .cert-name-wrap{
   position:absolute;
-  top:40.7%;left:15%;right:15%;
-  display:flex;align-items:center;justify-content:center;
-  text-align:center;
+  top:37.7%;left:15%;right:15%;
+  height:24.2%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;gap:4%;
 }
 .cert-name{
   font-family:'Charm',serif;
   font-size:clamp(.85rem,2.8vw,1.3rem);
   font-weight:700;color:#6b1212;line-height:1.1;
 }
-
-/* ─── 4: เนื้อหา → กรอบ 2 (y=37.7–61.9%, กลาง=49.6%) ─── */
 .cert-body-wrap{
-  position:absolute;
-  top:47.7%;left:16%;right:16%;
-  height:24.2%;
-  display:flex;align-items:center;justify-content:center;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
   text-align:center;
   line-height:1.55;
   font-size:clamp(.45rem,1.5vw,.62rem);
   color:#3a1800;
-  flex-direction:column;
 }
 
-/* ─── 5: ผ่าน X% → กรอบ 3 (y=67.1–74.6%, กลาง=71%) ─── */
+/* ─── กรอบ 3 (y=67.1–74.6%): ผ่าน X% ─── */
 .cert-score-wrap{
   position:absolute;
   top:67.1%;left:20%;right:20%;
@@ -164,24 +163,22 @@ body{
 
     <div class="cert-overlay">
 
-      <!-- 1+2: เกียรติบัตร / มอบให้แก่ (เหนือกรอบ 1) -->
+      <!-- กรอบ 1: เกียรติบัตร + มอบให้แก่ -->
       <div class="cert-head">
         <span class="cert-title">เกียรติบัตร</span>
         <span class="cert-sub">มอบให้แก่</span>
       </div>
 
-      <!-- 3: ชื่อนักเรียน (กรอบ 1) -->
+      <!-- กรอบ 2: ชื่อนักเรียน + เนื้อหา -->
       <div class="cert-name-wrap">
         <span class="cert-name" id="cert-student-name">—</span>
+        <div class="cert-body-wrap">
+          <p>ผ่านการเรียนรู้สื่อดิจิทัลนวัตกรรมการศึกษา</p>
+          <p>นิทานพื้นบ้านอุสา บารส</p>
+        </div>
       </div>
 
-      <!-- 4: เนื้อหา (กรอบ 2) -->
-      <div class="cert-body-wrap">
-        <p>ผ่านการเรียนรู้สื่อดิจิทัลนวัตกรรมการศึกษา</p>
-        <p>นิทานพื้นบ้านอุสา บารส</p>
-      </div>
-
-      <!-- 5: คะแนน ผ่าน X% (กรอบ 3 — ช่องว่างที่ 3) -->
+      <!-- กรอบ 3: ผ่าน X% -->
       <div class="cert-score-wrap">
         <span class="cert-score" id="cert-score-text">—</span>
       </div>
