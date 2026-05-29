@@ -8,23 +8,23 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Sarabun',sans-serif;min-height:100vh;overflow-x:hidden;
-  background:url('https://chaochichi.github.io/storyAusaBaros/ChatGPT%20Image%2025%20%E0%B8%9E.%E0%B8%84.%202569%2015_29_18.png') center center/cover no-repeat fixed}
+background:url('https://chaochichi.github.io/storyAusaBaros/ChatGPT%20Image%2025%20%E0%B8%9E.%E0%B8%84.%202569%2015_29_18.png') center center/cover no-repeat fixed}
 .overlay{position:fixed;inset:0;background:linear-gradient(180deg,#e3f2fd99,#e8eaf6cc);z-index:0}
 .container{position:relative;z-index:1;max-width:500px;margin:0 auto;padding:16px 14px 40px}
 
 /* Header */
 .header-img{width:100%;border-radius:20px;display:block;margin-bottom:16px;box-shadow:0 8px 32px #00000033}
 .header{text-align:center;margin-bottom:16px;padding:16px;
-  background:linear-gradient(135deg,#e3f2fddd,#e8eaf6dd);
-  border-radius:20px;border:2px solid #42a5f5;backdrop-filter:blur(10px)}
+background:linear-gradient(135deg,#e3f2fddd,#e8eaf6dd);
+border-radius:20px;border:2px solid #42a5f5;backdrop-filter:blur(10px)}
 .badge{display:inline-block;background:linear-gradient(90deg,#1565c0,#1976d2);
-  color:#fff;font-size:12px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:8px}
+color:#fff;font-size:12px;font-weight:800;padding:5px 16px;border-radius:20px;margin-bottom:8px}
 .header h1{font-size:20px;font-weight:800;color:#0d47a1}
 
 /* My Score Card */
 .my-score{background:linear-gradient(135deg,#fff9eedd,#fff3e0dd);
-  border-radius:20px;border:2px solid #ff9800;padding:18px;
-  margin-bottom:16px;backdrop-filter:blur(8px);text-align:center}
+border-radius:20px;border:2px solid #ff9800;padding:18px;
+margin-bottom:16px;backdrop-filter:blur(8px);text-align:center}
 .my-score-label{font-size:13px;color:#e65100;font-weight:700;margin-bottom:6px}
 .my-score-name{font-size:20px;font-weight:800;color:#5d2e00;margin-bottom:8px}
 .my-score-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
@@ -40,10 +40,10 @@ body{font-family:'Sarabun',sans-serif;min-height:100vh;overflow-x:hidden;
 /* Top 5 */
 .top5-title{font-size:16px;font-weight:800;color:#0d47a1;margin-bottom:12px;text-align:center}
 .rank-card{display:flex;align-items:center;gap:12px;
-  background:linear-gradient(135deg,#e3f2fdee,#e8eaf6ee);
-  border-radius:16px;border:1.5px solid #42a5f5;
-  padding:12px 16px;margin-bottom:10px;backdrop-filter:blur(6px)}
-.rank-card.rank-gold{border-color:#ffd700;background:linear-gradient(135deg,#fff9e6ee,#fff3cdee)}
+background:linear-gradient(135deg,#e3f2fdee,#e8eaf6ee);
+border-radius:16px;border:1.5px solid #42a5f5;
+padding:12px 16px;margin-bottom:10px;backdrop-filter:blur(6px)}
+.rank-card.rank-gold  {border-color:#ffd700;background:linear-gradient(135deg,#fff9e6ee,#fff3cdee)}
 .rank-card.rank-silver{border-color:#b0bec5;background:linear-gradient(135deg,#f5f5f5ee,#ecececee)}
 .rank-card.rank-bronze{border-color:#ff8a65;background:linear-gradient(135deg,#fff3e0ee,#ffe0b2ee)}
 .rank-num{font-size:28px;font-weight:800;min-width:40px;text-align:center}
@@ -61,41 +61,42 @@ body{font-family:'Sarabun',sans-serif;min-height:100vh;overflow-x:hidden;
 /* Loading */
 .loading{text-align:center;padding:30px;color:#1565c0;font-size:16px;font-weight:700}
 .spinner{width:40px;height:40px;border:4px solid #e3f2fd;border-top-color:#1976d2;
-  border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
+border-radius:50%;animation:sp .8s linear infinite;margin:0 auto 12px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
 /* Error */
 .error-box{background:#fde8e8;border:2px solid #e74c3c44;border-radius:16px;
-  padding:16px;text-align:center;color:#c0392b;font-weight:700}
+padding:16px;text-align:center;color:#c0392b;font-weight:700}
 
 /* Btn retry */
 .btn-retry{width:100%;padding:14px;background:linear-gradient(135deg,#1976d2,#42a5f5);
-  color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;
-  cursor:pointer;font-family:'Sarabun',sans-serif;margin-top:14px;
-  box-shadow:0 4px 16px #1976d255}
+color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:800;
+cursor:pointer;font-family:'Sarabun',sans-serif;margin-top:14px;
+box-shadow:0 4px 16px #1976d255}
 .btn-retry:hover{opacity:.9}
-
 .no-data{text-align:center;padding:20px;color:#1565c0;font-size:15px;font-weight:600}
 </style>
 </head>
 <body>
 <div class="overlay"></div>
 <div class="container">
-  <img class="header-img"
-    src="https://chaochichi.github.io/storyAusaBaros/Header.png"
-    alt="อุสา บารส">
 
-  <div class="header">
-    <div class="badge">🏆 ผลคะแนน</div>
-    <h1>อันดับและผลการเรียนรู้</h1>
-  </div>
+<img class="header-img"
+  src="https://chaochichi.github.io/storyAusaBaros/Header.png"
+  alt="อุสา บารส">
 
-  <div id="content">
-    <div class="loading">
-      <div class="spinner"></div>
-      กำลังโหลดคะแนน...
-    </div>
+<div class="header">
+  <div class="badge">🏆 ผลคะแนน</div>
+  <h1>อันดับและผลการเรียนรู้</h1>
+</div>
+
+<div id="content">
+  <div class="loading">
+    <div class="spinner"></div>
+    กำลังโหลดคะแนน...
   </div>
+</div>
+
 </div>
 
 <script>
@@ -105,9 +106,10 @@ const myName = params.get('name') || '';
 
 async function loadRanking() {
   try {
-    const res = await fetch(SCRIPT_URL + '?name=' + encodeURIComponent(myName));
-    const data = await res.json();
+    const res  = await fetch(SCRIPT_URL + '?action=ranking');
+    const data = await res.json();  // รับ {status, total, top5, all}
     renderRanking(data);
+
   } catch(e) {
     document.getElementById('content').innerHTML = `
       <div class="error-box">
@@ -118,20 +120,24 @@ async function loadRanking() {
 }
 
 function renderRanking(data) {
-  const top5 = data.top5 || [];
-  const myRank = data.myRank || -1;
-  const myData = data.myData || null;
+  const top5  = data.top5  || [];
+  const all   = data.all   || [];
   const total = data.total || 0;
+
+  // คำนวณ myRank และ myData จาก all
+  const myIdx  = all.findIndex(r => r.name === myName);
+  const myData = myIdx >= 0 ? all[myIdx] : null;
+  const myRank = myIdx >= 0 ? myIdx + 1  : -1;
 
   let html = '';
 
   // My Score Card
   if (myData) {
-    const pre = myData.pre || 0;
-    const post = myData.post || 0;
+    const pre     = myData.pre  || 0;
+    const post    = myData.post || 0;
     const improve = post - pre;
-    const rankClass = myRank === 1 ? 'rank-1' : myRank === 2 ? 'rank-2' : myRank === 3 ? 'rank-3' : 'rank-other';
-    const rankText = myRank > 0 ? `อันดับที่ ${myRank} จาก ${total} คน` : 'ยังไม่มีข้อมูล';
+    const rankClass = myRank===1?'rank-1':myRank===2?'rank-2':myRank===3?'rank-3':'rank-other';
+    const rankText  = myRank > 0 ? `อันดับที่ ${myRank} จาก ${total} คน` : 'ยังไม่มีข้อมูล';
 
     html += `
       <div class="my-score">
@@ -168,13 +174,13 @@ function renderRanking(data) {
   if (top5.length === 0) {
     html += `<div class="no-data">ยังไม่มีข้อมูลคะแนน</div>`;
   } else {
-    const medals = ['🥇','🥈','🥉','4️⃣','5️⃣'];
-    const rankClasses = ['rank-gold','rank-silver','rank-bronze','',''];
+    const medals     = ['🥇','🥈','🥉','4️⃣','5️⃣'];
+    const rankClasses= ['rank-gold','rank-silver','rank-bronze','',''];
     const numClasses = ['rank-num-1','rank-num-2','rank-num-3','rank-num-other','rank-num-other'];
 
     top5.forEach((item, i) => {
       const post = item.post || 0;
-      const pct = Math.round((post / 15) * 100);
+      const pct  = Math.round((post / 15) * 100);
       const isMe = item.name === myName;
       html += `
         <div class="rank-card ${rankClasses[i]}" style="${isMe?'border-width:3px;border-color:#ff9800':''}">
