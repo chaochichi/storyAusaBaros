@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ผู้จัดทำ — อุสา บารส</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+}
+body{
+  background:url('https://chaochichi.github.io/storyAusaBaros/bgDeveloper.png')
+    center center/cover no-repeat;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+}
+
+/* ปุ่ม Home ลอยขวาล่าง */
+.home-btn-float{
+  position:fixed;
+  bottom:24px;right:20px;
+  width:60px;height:60px;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:9999;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:0 6px 20px rgba(0,0,0,0.35);
+  overflow:hidden;
+  background:transparent;
+  border:none;padding:0;
+}
+.home-btn-float img{
+  width:100%;height:100%;
+  object-fit:contain;display:block;
+}
+.home-btn-float:active{
+  transform:scale(.88);
+  box-shadow:0 3px 10px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+
+<!-- ปุ่ม Home กลับ index -->
+<button class="home-btn-float" onclick="goHome()" title="กลับหน้าแรก">
+  <img src="https://chaochichi.github.io/storyAusaBaros/btn_home.png" alt="Home">
+</button>
+
+<script>
+function goHome() {
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
