@@ -8,13 +8,18 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{
   width:100%;height:100%;
-  overflow:hidden;
+  background:url('https://chaochichi.github.io/storyAusaBaros/bg_screen4.png') center center/cover no-repeat;
+  overflow-y:auto;
+  overflow-x:hidden;
 }
-body{
-  background:url('https://chaochichi.github.io/storyAusaBaros/bgDeveloper.png')
-    center center/cover no-repeat;
-  display:flex;align-items:center;justify-content:center;
+
+/* รูปเต็มหน้าจอ ไม่ crop */
+.dev-img{
+  width:100%;
+  display:block;
   min-height:100vh;
+  object-fit:contain;
+  object-position:top;
 }
 
 /* ปุ่ม Home ลอยขวาล่าง */
@@ -27,7 +32,7 @@ body{
   z-index:9999;
   -webkit-tap-highlight-color:transparent;
   transition:transform .15s,box-shadow .15s;
-  box-shadow:0 6px 20px rgba(0,0,0,0.35);
+  box-shadow:0 6px 20px rgba(0,0,0,0.5);
   overflow:hidden;
   background:transparent;
   border:none;padding:0;
@@ -43,6 +48,11 @@ body{
 </style>
 </head>
 <body>
+
+<!-- รูปข้อมูลผู้จัดทำเต็มหน้าจอ -->
+<img class="dev-img"
+  src="https://chaochichi.github.io/storyAusaBaros/bgDeveloper.png"
+  alt="ข้อมูลผู้จัดทำ">
 
 <!-- ปุ่ม Home กลับ index -->
 <button class="home-btn-float" onclick="goHome()" title="กลับหน้าแรก">
