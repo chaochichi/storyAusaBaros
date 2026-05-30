@@ -142,7 +142,7 @@ function renderRanking(data) {
     html += `
       <div class="my-score">
         <div class="my-score-label">📊 ผลคะแนนของฉัน</div>
-        <div class="my-score-name">👤 ${myData.name || myName}</div>
+        <div class="my-score-name"><img src="icon_user.png" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:6px;"> ${myData.name || myName}</div>
         <div class="my-score-grid">
           <div class="my-score-item">
             <div class="my-score-num">${pre}/15</div>
@@ -163,7 +163,7 @@ function renderRanking(data) {
     html += `
       <div class="my-score">
         <div class="my-score-label">📊 ผลคะแนนของฉัน</div>
-        <div class="my-score-name">👤 ${myName}</div>
+        <div class="my-score-name"><img src="icon_user.png" style="width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:6px;"> ${myName}</div>
         <div class="no-data">ยังไม่มีข้อมูลคะแนน<br>กรุณาทำแบบทดสอบก่อนนะคะ</div>
       </div>`;
   }
