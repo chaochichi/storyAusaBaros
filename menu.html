@@ -35,12 +35,11 @@ body{
   max-width:90%;
 }
 .user-avatar{
-  width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,#d4a017,#f5c842);
-  display:flex;align-items:center;justify-content:center;
-  font-size:16px;flex-shrink:0;
+  width:36px;height:36px;border-radius:50%;
+  overflow:hidden;flex-shrink:0;
   box-shadow:0 2px 8px rgba(212,160,23,0.4);
 }
+.user-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
 .user-info{display:flex;flex-direction:column;line-height:1.3;}
 .user-label{font-size:10px;color:#a07820;font-weight:600;letter-spacing:0.5px;}
 .user-text{font-size:15px;font-weight:800;color:#5d2e00;}
@@ -102,7 +101,9 @@ body{
 
 <!-- ชื่อผู้ใช้ (สวยงาม) -->
 <div class="user-name" id="userName">
-  <div class="user-avatar">👤</div>
+  <div class="user-avatar">
+    <img src="https://chaochichi.github.io/storyAusaBaros/icon_user.png" alt="user">
+  </div>
   <div class="user-info">
     <span class="user-label">ผู้เรียน</span>
     <span class="user-text" id="userNameText">—</span>
