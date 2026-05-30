@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>อุสา บารส</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;height:100%;
+  font-family:'Sarabun',sans-serif;
+  overflow:hidden;
+}
+body{
+  background:url('https://chaochichi.github.io/storyAusaBaros/bg_screen.png')
+    center center/cover no-repeat;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;
+  min-height:100vh;
+}
+
+/* Header */
+.header{width:100%;max-width:480px;}
+.header img{width:100%;display:block;}
+
+/* Content */
+.content{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  flex:1;width:100%;max-width:480px;
+  padding:16px 24px;gap:16px;
+}
+
+/* Input */
+.input-wrap{
+  width:100%;
+  background:rgba(255,255,255,0.85);
+  border-radius:50px;
+  border:3px solid #d4a017;
+  padding:12px 20px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
+}
+.input-wrap input{
+  width:100%;border:none;background:transparent;
+  font-family:'Sarabun',sans-serif;
+  font-size:18px;font-weight:600;
+  color:#3a1800;text-align:center;
+  outline:none;
+}
+.input-wrap input::placeholder{color:#a0856a;}
+
+/* Buttons */
+.btn-img{
+  width:85%;max-width:340px;
+  cursor:pointer;display:block;
+  transition:transform .15s,opacity .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.btn-img:active{transform:scale(.95);opacity:.85;}
+
+/* Error msg */
+.err-msg{
+  color:#c0392b;font-size:14px;font-weight:700;
+  background:rgba(255,255,255,0.85);
+  padding:8px 20px;border-radius:20px;
+  display:none;
+}
+.err-msg.show{display:block;}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <img src="https://chaochichi.github.io/storyAusaBaros/header_screen.png" alt="อุสา บารส">
+</div>
+
+<!-- Content -->
+<div class="content">
+
+  <!-- ช่องกรอกชื่อ -->
+  <div class="input-wrap">
+    <input type="text" id="nameInput"
+      placeholder="กรุณากรอกชื่อ - นามสกุลผู้ใช้งาน"
+      maxlength="50">
+  </div>
+
+  <!-- Error -->
+  <div class="err-msg" id="errMsg">กรุณากรอกชื่อก่อนเข้าบทเรียนนะคะ</div>
+
+  <!-- ปุ่มเข้าสู่บทเรียน -->
+  <img class="btn-img"
+    src="https://chaochichi.github.io/storyAusaBaros/btn_course.png"
+    alt="เข้าสู่บทเรียน"
+    onclick="enterCourse()">
+
+  <!-- ปุ่มผู้จัดทำ -->
+  <img class="btn-img"
+    src="https://chaochichi.github.io/storyAusaBaros/btn_developer.png"
+    alt="ผู้จัดทำ"
+    onclick="goDeveloper()">
+
+</div>
+
+<script>
+function enterCourse() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) {
+    const err = document.getElementById('errMsg');
+    err.className = 'err-msg show';
+    setTimeout(() => err.className = 'err-msg', 2500);
+    return;
+  }
+  window.location.href = 'menu.html?name=' + encodeURIComponent(name);
+}
+
+function goDeveloper() {
+  window.location.href = 'developer.html';
+}
+
+// กด Enter ได้เลย
+document.getElementById('nameInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') enterCourse();
+});
+</script>
+</body>
+</html>

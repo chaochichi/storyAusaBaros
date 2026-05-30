@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>เมนูหลัก — อุสา บารส</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  width:100%;min-height:100vh;
+  font-family:'Sarabun',sans-serif;
+  overflow-x:hidden;
+}
+body{
+  background:url('https://chaochichi.github.io/storyAusaBaros/bg_screen4.png')
+    center center/cover no-repeat fixed;
+  display:flex;flex-direction:column;
+  align-items:center;
+}
+
+/* Header */
+.header{width:100%;max-width:480px;position:relative;}
+.header img.header-img{width:100%;display:block;}
+
+/* ปุ่ม Home ซ้ายบน */
+.btn-home{
+  position:absolute;top:8px;left:8px;
+  width:48px;cursor:pointer;
+  transition:transform .15s;
+  -webkit-tap-highlight-color:transparent;
+  z-index:10;
+}
+.btn-home:active{transform:scale(.9);}
+
+/* ชื่อผู้ใช้ */
+.user-name{
+  background:rgba(255,255,255,0.75);
+  border-radius:20px;padding:4px 16px;
+  font-size:13px;font-weight:700;color:#5d2e00;
+  margin:6px 0;
+  border:1.5px solid #d4a017;
+}
+
+/* Grid เมนู */
+.menu-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:8px 16px 24px;
+  width:100%;max-width:480px;
+}
+
+/* ปุ่มเมนู */
+.menu-btn{
+  width:100%;cursor:pointer;display:block;
+  border-radius:12px;overflow:hidden;
+  transition:transform .15s,opacity .15s;
+  -webkit-tap-highlight-color:transparent;
+  box-shadow:0 4px 12px rgba(0,0,0,0.25);
+}
+.menu-btn:active{transform:scale(.94);opacity:.85;}
+.menu-btn img{width:100%;display:block;}
+</style>
+</head>
+<body>
+
+<!-- Header + Home button -->
+<div class="header">
+  <img class="header-img"
+    src="https://chaochichi.github.io/storyAusaBaros/Header.png"
+    alt="อุสา บารส">
+  <img class="btn-home"
+    src="https://chaochichi.github.io/storyAusaBaros/btn_home.png"
+    alt="หน้าแรก"
+    onclick="goHome()">
+</div>
+
+<!-- ชื่อผู้ใช้ -->
+<div class="user-name" id="userName">👤 —</div>
+
+<!-- เมนู 10 ปุ่ม (2 คอลัมน์) -->
+<div class="menu-grid">
+
+  <div class="menu-btn" onclick="go('pre.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_pre.png" alt="ทดสอบก่อนเรียน">
+  </div>
+
+  <div class="menu-btn" onclick="go('video_pause.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_vdoTH.png" alt="VDO ภาษาไทย">
+  </div>
+
+  <div class="menu-btn" onclick="go('vdo_pause.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_vdoEsan.png" alt="VDO ภาษาอีสาน">
+  </div>
+
+  <div class="menu-btn" onclick="go('ebook.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_ebook.png" alt="E-Book">
+  </div>
+
+  <div class="menu-btn" onclick="go('info.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_info.png" alt="ข้อมูล">
+  </div>
+
+  <div class="menu-btn" onclick="go('game.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_game.png" alt="เกม">
+  </div>
+
+  <div class="menu-btn" onclick="go('post.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_post.png" alt="ทดสอบหลังเรียน">
+  </div>
+
+  <div class="menu-btn" onclick="go('certificate.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_cert.png" alt="เกียรติบัตร">
+  </div>
+
+  <div class="menu-btn" onclick="go('chat.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/ausa_chat.png" alt="AI Chat">
+  </div>
+
+  <div class="menu-btn" onclick="go('ranking.html')">
+    <img src="https://chaochichi.github.io/storyAusaBaros/btn_ranking.png" alt="Ranking">
+  </div>
+
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const name   = params.get('name') || '';
+
+// แสดงชื่อ
+document.getElementById('userName').textContent = '👤 ' + (name || 'ไม่ระบุชื่อ');
+
+// ไปหน้าต่างๆ พร้อมส่งชื่อ
+function go(page) {
+  window.location.href = page + '?name=' + encodeURIComponent(name);
+}
+
+// กลับหน้าแรก (index)
+function goHome() {
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
